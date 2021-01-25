@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+
+    <Script src="../js/ApiConfig.js"></Script>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <!-- <fieldset class="table-search-fieldset">
+            <legend>查询维修单</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">教学楼</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="sex" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">房间号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="city" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">审核人  </label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="classify" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset> -->
+
+        <!-- <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>  
+            </div>
+        </script> -->
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <!-- <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-xs layui-btn" lay-event="detail">详情</a>
+        </script> -->
+
+        <script type="text/html" id="tableBar_1">
+            <!-- <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="pass">予以通过</a>
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="unpass">不通过</a> -->
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+        </script>
+
+        <script type="text/html" id="tableBar_2">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+        </script>
+
+        <script type="text/html" id="tableBar_3">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+        </script>
+    </div>
+</div>
+<script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+    var status = getUrlParam('status'); 
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+           // url: 'http://10.24.216.223:8080/Maintain/api/orders/admin?status=' + status,
+            url: 'http://'+onlineBaseUrl+':8080/Maintain/api/orders/admin?status=' + status,
+            
+            headers: {Authorization: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJuanh6Yy5lZHUuY24iLCJpYXQiOjE2MTAwODAyMDEsInN1YiI6IntcInJvbGVcIjo0LFwiaWRcIjo0fSIsImV4cCI6MTYxMjY3MjIwMX0.uuvqc7g7kTYeZDz_SR3CtWiFwxHGXQ3-pjSoxniZlYk'},
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.code === 200 ? 0 : 500, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.data.total, //解析数据长度
+                    "data": res.data.orders //解析数据列表
+                };
+            },
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+            {type: "checkbox", width: 50},
+                {field: 'id', width: 80, title: 'ID', sort: true},
+                {field: 'departmentName', width: 130, title: '学院'},
+                {field: 'enginRoomName', width: 110, title: '实验室'},
+                {field: 'adminName', title: '申请人', width: 80},
+                {field: 'detail', width: 200, title: '问题描述', sort: true},
+                // {field: 'images', width: 200, title: '图片',templet:'<div><img src="{{d.images[0]}}"></div>'},
+                {field: 'status', width: 120, title: '状态', sort: true},
+                {title: '操作', width: 150, toolbar: '#tableBar_' + status, align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        // form.on('submit(data-search-btn)', function (data) {
+        //     var result = JSON.stringify(data.field);
+        //     layer.alert(result, {
+        //         title: '最终的搜索信息'
+        //     });
+
+        //     //执行搜索重载
+        //     table.reload('currentTableId', {
+        //         page: {
+        //             curr: 1
+        //         }
+        //         , where: {
+        //             searchParams: result
+        //         }
+        //     }, 'data');
+
+        //     return false;
+        // });
+
+        /**
+         * toolbar监听事件
+         */
+        // table.on('toolbar(currentTableFilter)', function (obj) {
+        //     if (obj.event === 'add') {  // 监听添加操作
+        //         var index = layer.open({
+        //             title: '添加用户',
+        //             type: 2,
+        //             shade: 0.2,
+        //             maxmin:true,
+        //             shadeClose: true,
+        //             area: ['100%', '100%'],
+        //             content: '../page/table/add.html',
+        //         });
+        //         $(window).on("resize", function () {
+        //             layer.full(index);
+        //         });
+        //     } else if (obj.event === 'delete') {  // 监听删除操作
+        //         var checkStatus = table.checkStatus('currentTableId')
+        //              data = checkStatus.data;
+        //         layer.alert(JSON.stringify(data));
+        //     } else if (obj.event === 'detail'){
+        //         var index = layer.open({
+        //             title: '详情',
+        //             type: 2,
+        //             shade: 0.2,
+        //             maxmin:true,
+        //             shadeClose: true,
+        //             area: ['100%', '100%'],
+        //         });
+        //         $(window).on("resize", function () {
+        //             layer.full(index);
+        //         });
+        //     }
+        // });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            //  if (obj.event === 'unpass') {
+            //     layer.confirm('确定不通过?', function (index) {
+            //         obj.del();
+            //         layer.close(index);
+            //     });
+            // }else 
+            if(obj.event === 'detail'){
+                var _data = JSON.stringify(data);
+                localStorage.setItem('current_detail', _data);
+                var index = layer.open({
+                    title: '详情',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['50%', '50%'],
+                    content: '../page/table/order/detail_' + status + '.html',
+                });
+            }
+            // else if (obj.event === 'pass') {
+            //     layer.confirm('通过该条申请吗?', function (index) {
+
+            //         //调用ajax接口给表单通过
+            //         layer.close(index);
+            //     });
+            // }
+        });
+
+    });
+</script>
+
+</body>
+</html>

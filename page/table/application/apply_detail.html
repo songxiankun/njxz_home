@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <div class="layui-form-item" style="color: black">
+        <input type="hidden" value="" id="_id">
+        <label class="layui-form-label required">申请人</label>
+        <div class="layui-input-block">
+            <input type="text" name="admin_name" id="admin_name" lay-verify="required" readonly lay-reqtext="用户名不能为空"
+                   placeholder=""
+                   value=""
+                   class="layui-input layui-disabled">
+            <!--            <tip>填写自己管理账号的名称。</tip>-->
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">组织部门</label>
+        <div class="layui-input-block">
+            <input type="text" name="org" lay-verify="required" id="org" readonly lay-reqtext="组织部门不能为空" placeholder=""
+                   value=""
+                   class="layui-input layui-disabled">
+            <!--            <tip>填写自己管理账号的名称。</tip>-->
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">所属楼</label>
+        <div class="layui-input-block">
+            <input type="text" name="build_name" lay-verify="required" id="build_name" lay-reqtext="所属楼不能为空"
+                   placeholder="" value=""
+                   class="layui-input layui-disabled">
+            <!--            <tip>填写自己管理账号的名称。</tip>-->
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">实验室</label>
+        <div class="layui-input-block">
+            <input type="text" name="engin_room" readonly lay-verify="required" id="engin_room" lay-reqtext="实验室不能为空"
+                   placeholder=""
+                   value=""
+                   class="layui-input layui-disabled">
+            <!--            <tip>填写自己管理账号的名称。</tip>-->
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">维修详情</label>
+        <div class="layui-input-block">
+            <input type="text" name="device" lay-verify="required" id="device" readonly lay-reqtext="维修详情不能为空"
+                   placeholder="" value=""
+                   class="layui-input layui-disabled">
+            <!--            <tip>填写自己管理账号的名称。</tip>-->
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">设备图片</label>
+        <div class="layui-input-inline" id="setImages">
+
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">审核人</label>
+        <div class="layui-input-block">
+            <input type="text" name="upd_name" id="upd_name" lay-verify="required" readonly lay-reqtext="审核人不能为空"
+                   placeholder="" value=""
+                   class="layui-input layui-disabled">
+            <!--            <tip>填写自己管理账号的名称。</tip>-->
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">创建时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="format_add_time" id="format_add_time" lay-verify="required" readonly placeholder=""
+                   value=""
+                   class="layui-input layui-disabled">
+            <!--            <tip>填写自己管理账号的名称。</tip>-->
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="closeBtn">关闭窗口</button>
+        </div>
+    </div>
+</div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script src="/js/ApiConfig.js"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+        //data display
+        const data = JSON.parse(localStorage.getItem('currDetail'));
+        for (var k in data) {
+            // console.log(k)
+
+            if (k == 'images') {
+                for (var i = 0; i < data[k].length; ++i) {
+                    $("#setImages").append(
+                        '<a href="' + data[k][i] + '" target="_blank"><img alt="设备问题图片" src="' + data[k][i] + '" ' +
+                        'width="80" height="80" /></a>'
+                    );
+                }
+            } else {
+                $("#" + k).val(data[k]);
+            }
+        }
+        localStorage.removeItem('currDetail')
+        //监听提交
+        form.on('submit(closeBtn)', function (data) {
+            var index = layer.msg("关闭成功", {
+                icon: 1,
+                time: 1000
+            }, function () {
+                // 关闭弹出层
+                layer.close(index);
+                var iframeIndex = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(iframeIndex);
+
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

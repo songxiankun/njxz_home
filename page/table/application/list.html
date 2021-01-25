@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+    <script src="../../../js/ApiConfig.js"></script>
+</head>
+<style>
+    .layui-table-cell {
+        height: auto;
+    }
+</style>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <!-- <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">学院名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="departmentName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">实验室名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="enginRoomName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">申请人姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="adminName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">机器编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="deviceNum" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset> -->
+
+        <!-- <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+            </div>
+        </script> -->
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="tableBar_1">
+            <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="pass">立即批准</a>
+            <a class="layui-btn layui-btn-danger layui-btn-sm layui-btn-radius" lay-event="fail">不同意</a>
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">查看详情</a>
+        </script>
+
+        <script type="text/html" id="tableBar_2">
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">查看详情</a>
+        </script>
+
+        <script type="text/html" id="tableBar_3">
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">查看详情</a>
+        </script>
+
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+
+<script src="/js/ApiConfig.js" charset="utf-8"></script>
+
+<script type="text/html" id="handleTime">
+    {{#  if(d.updateTime == null){ }}
+    暂无
+    {{#  } else { }}
+    {{d.updateTime}}
+    {{#  } }}
+</script>
+
+
+<script>
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+        if (r != null) return unescape(r[2]);
+        return null; //返回参数值
+    }
+
+    var status_ = getUrlParam('status');
+
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: onlineBaseUrl + 'api/applications/approver?status=' + status_,
+            // url: 'http://10.24.216.223:8080/Maintain/api/applications/approver?status=' + status,
+            headers: {Authorization: '2333'},
+            parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": res.code === 200 ? 0 : 500, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.data.total, //解析数据长度
+                    "data": res.data.applications //解析数据列表
+                };
+            },
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', width: 80, title: 'ID', sort: true},
+                {field: 'departmentName', width: 130, title: '学院'},
+                {field: 'enginRoomName', width: 110, title: '实验室'},
+                {field: 'adminName', title: '申请人', width: 80},
+                {field: 'detail', width: 200, title: '问题描述', sort: true},
+                {
+                    field: 'images',
+                    width: 200,
+                    align: 'center',
+                    title: '维修图片',
+                    templet: function (d) {
+                        return '<a href="'+d.images[0]+'" target="_blank"><img height="30px" width="30" src="'+d.images[0]+'" /></a>';
+                    }
+                },
+                {field: 'status', width: 120, title: '状态', sort: true},
+                {field: 'addTime', width: 200, title: '申请时间', sort: true},
+                {field: 'updateTime', width: 200, title: '更新时间', sort: true, templet: '#handleTime'},
+                {title: '操作', width: 260, toolbar: '#tableBar_' + status_, align: "center", fixed: "right"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            layer.alert(result, {
+                title: '最终的搜索信息'
+            });
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    searchParams: result
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            var applicationId = data.id;
+            // if (obj.event === 'edit') {
+
+            //     var index = layer.open({
+            //         title: '编辑用户',
+            //         type: 2,
+            //         shade: 0.2,
+            //         maxmin:true,
+            //         shadeClose: true,
+            //         area: ['100%', '100%'],
+            //         content: '../page/table/edit.html',
+            //     });
+            //     $(window).on("resize", function () {
+            //         layer.full(index);
+            //     });
+            //     return false;
+            // } else 
+
+
+            if (obj.event === 'delete') {
+                layer.confirm('你真的要删除吗?', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'detail') {
+                var _data = JSON.stringify(data);
+                localStorage.setItem('current_detail', _data);
+                var index = layer.open({
+                    title: '申请单详情',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['50%', '80%'],
+                    content: '/page/table/application/detail_' + status_ + '.html',
+                });
+            } else if (obj.event === 'pass') {
+                layer.confirm('你真的要通过该条申请吗?', function (index) {
+                    //调用ajax接口给表单通过
+                    $.ajax({
+                        url: javaBaseUrl + "api/applications/approver/passed",
+                        headers: {Authorization: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJuanh6Yy5lZHUuY24iLCJpYXQiOjE2MTAwMDM2NDgsInN1YiI6IntcInJvbGVcIjo0LFwiaWRcIjo1fSIsImV4cCI6MTYxMjU5NTY0OH0.R37tgYV7-PqsWI3oWJYSvADEvJG8dccsEHpzG2sWQlE'},
+                        data: {id: applicationId},
+                        dataType: "json",
+                        type: "POST",
+                        success: function (res) {
+                            console.log(res);
+                            layer.closeAll();
+                            if (res.code == 200) {
+                                layer.msg(res.msg, {icon: 1, time: 400}, function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.msg(res.msg, {icon: 5});
+                            }
+                        },
+                        error: function () {
+                            layer.msg("请求异常", {icon: 5});
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'fail') {
+
+                layer.prompt({
+                        title: '请填写不通过的原因：'
+                    },
+                    function (value, index, elem) {
+                        var note = value;
+                        $.ajax({
+                            url: javaBaseUrl + "/api/applications/approver/failed",
+                            headers: {Authorization: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJuanh6Yy5lZHUuY24iLCJpYXQiOjE2MTAwMDM2NDgsInN1YiI6IntcInJvbGVcIjo0LFwiaWRcIjo1fSIsImV4cCI6MTYxMjU5NTY0OH0.R37tgYV7-PqsWI3oWJYSvADEvJG8dccsEHpzG2sWQlE'},
+                            data: {id: applicationId, note: note},
+                            dataType: "json",
+                            type: "POST",
+                            success: function (res) {
+                                layer.closeAll();
+                                if (res.code == 200) {
+                                    layer.msg(res.msg, {icon: 1, time: 400}, function () {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    layer.msg(res.msg, {icon: 5});
+                                }
+                            },
+                            error: function () {
+                                layer.msg("请求异常", {icon: 5});
+                            }
+                        });
+                        layer.close(index);
+                    });
+            }
+        });
+
+    });
+</script>
+
+</body>
+</html>

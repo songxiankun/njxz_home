@@ -1,0 +1,73 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "/welcome.html?t=1"
+  },
+  "logoInfo": {
+    "title": "NJXZC",
+    "image": "./images/logo.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "常规管理",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "维修管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "",
+          "child": [
+            {
+              "title": "待接单",
+              "href": "page/table/worker/order/list.html?status=0",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "已接单",
+              "href": "page/table/worker/order/list.html?status=1",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "维修进度管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "",
+          "child": [
+            {
+              "title": "待维修",
+              "href": "page/table/worker/order/list.html?status=2",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "维修中",
+              "href": "page/table/worker/order/list.html?status=3",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "维修结束",
+              "href": "page/table/worker/order/list.html?status=4",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "待签字",
+              "href": "page/table/worker/order/list.html?status=5",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <!-- <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-xs layui-btn" lay-event="detail">详情</a>
+        </script> -->
+
+        <script type="text/html" id="tableBar_0">
+            <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="take">&nbsp;立即接单&nbsp;</a>
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">&nbsp;查看详情&nbsp;</a>
+        </script>
+
+        <script type="text/html" id="tableBar_1">
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">&nbsp;查看详情&nbsp;</a>
+        </script>
+
+        <script type="text/html" id="tableBar_2">
+            <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="start">&nbsp;开始维修&nbsp;</a>
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">&nbsp;查看详情&nbsp;</a>
+        </script>
+
+        <script type="text/html" id="tableBar_3">
+            <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="submit_1">&nbsp;提交维修凭证&nbsp;</a>
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">&nbsp;查看详情&nbsp;</a>
+        </script>
+
+        <script type="text/html" id="tableBar_4">
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">&nbsp;查看详情&nbsp;</a>
+        </script>
+
+        <script type="text/html" id="tableBar_5">
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">&nbsp;查看详情&nbsp;</a>
+        </script>
+
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script src="/js/ApiConfig.js" charset="utf-8"></script>
+<script>
+    function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
+    
+
+    var status = getUrlParam('status');
+
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: javaBaseUrl + 'api/orders/user?status=' + status,
+            headers: {Authorization: localStorage.getItem('token')},
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.code === 200 ? 0 : 500, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.data.total, //解析数据长度
+                    "data": res.data.orders //解析数据列表
+                };
+            },
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+            {type: "checkbox", width: 50},
+                {field: 'id', width: 80, title: 'ID', sort: true},
+                {field: 'departmentName', width: 130, title: '学院'},
+                {field: 'enginRoomName', width: 110, title: '实验室'},
+                {field: 'adminName', title: '申请人', width: 80},
+                {field: 'signName', title: '负责人', width: 80},
+                {field: 'detail', width: 200, title: '问题描述', sort: true},
+                {field: 'orderTime', width: 200, title: '生成时间', sort: true},
+                {field: 'updTime', width: 200, title: '更新时间', sort: true, templet: function(d){
+                    return d.updTime == null ? '暂无' : d.updTime;
+                }},
+                // {field: 'images', width: 200, title: '图片',templet:'<div><img src="{{d.images[0]}}"></div>'},
+                {field: 'status', width: 120, title: '状态', sort: true},
+                {title: '操作', width: 250, toolbar: '#tableBar_' + status, align: "center", fixed: 'right'}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        // form.on('submit(data-search-btn)', function (data) {
+        //     var result = JSON.stringify(data.field);
+        //     layer.alert(result, {
+        //         title: '最终的搜索信息'
+        //     });
+
+        //     //执行搜索重载
+        //     table.reload('currentTableId', {
+        //         page: {
+        //             curr: 1
+        //         }
+        //         , where: {
+        //             searchParams: result
+        //         }
+        //     }, 'data');
+
+        //     return false;
+        // });
+
+        /**
+         * toolbar监听事件
+         */
+        // table.on('toolbar(currentTableFilter)', function (obj) {
+        //     if (obj.event === 'add') {  // 监听添加操作
+        //         var index = layer.open({
+        //             title: '添加用户',
+        //             type: 2,
+        //             shade: 0.2,
+        //             maxmin:true,
+        //             shadeClose: true,
+        //             area: ['100%', '100%'],
+        //             content: '../page/table/add.html',
+        //         });
+        //         $(window).on("resize", function () {
+        //             layer.full(index);
+        //         });
+        //     } else if (obj.event === 'delete') {  // 监听删除操作
+        //         var checkStatus = table.checkStatus('currentTableId')
+        //              data = checkStatus.data;
+        //         layer.alert(JSON.stringify(data));
+        //     } else if (obj.event === 'detail'){
+        //         var index = layer.open({
+        //             title: '详情',
+        //             type: 2,
+        //             shade: 0.2,
+        //             maxmin:true,
+        //             shadeClose: true,
+        //             area: ['100%', '100%'],
+        //         });
+        //         $(window).on("resize", function () {
+        //             layer.full(index);
+        //         });
+        //     }
+        // });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            var orderId = data.id;
+            if(obj.event === 'detail'){
+                var _data = JSON.stringify(data);
+                localStorage.setItem('current_detail', _data);
+                var index = layer.open({
+                    title: '',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['80%', '80%'],
+                    content: '/page/table/worker/order/detail_' + status + '.html',
+                });
+            } else if(obj.event === 'take') {
+                layer.confirm('确定要接下此订单?', function (index) {
+                    //调用ajax接口给表单通过
+                    $.ajax({
+                        url: javaBaseUrl + "api/orders/user/take",
+                        headers: {Authorization: localStorage.getItem('token')},
+                        data: {id: orderId},
+                        dataType: "json",
+                        type: "POST",
+                        success: function (res) {
+                            console.log(res);
+                            layer.closeAll();
+                            if (res.code == 200) {
+                                layer.msg(res.msg, {icon: 1, time: 400}, function(){
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.msg(res.msg, {icon: 5});
+                            }
+                        },
+                        error: function () {
+                            layer.msg("请求异常", {icon: 5});
+                        }
+                    });
+                    layer.close(index);
+                });
+
+            } else if(obj.event === 'start') {
+                layer.confirm('确定要开始维修?', function (index) {
+                    //调用ajax接口给表单通过
+                    $.ajax({
+                        url: javaBaseUrl + "api/orders/user/start",
+                        headers: {Authorization: localStorage.getItem('token')},
+                        data: {id: orderId},
+                        dataType: "json",
+                        type: "POST",
+                        success: function (res) {
+                            console.log(res);
+                            layer.closeAll();
+                            if (res.code == 200) {
+                                layer.msg(res.msg, {icon: 1, time: 400}, function(){
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.msg(res.msg, {icon: 5});
+                            }
+                        },
+                        error: function () {
+                            layer.msg("请求异常", {icon: 5});
+                        }
+                    });
+                    layer.close(index);
+                });
+            }else if(obj.event === 'submit_1') {
+                var _data = JSON.stringify(data);
+                localStorage.setItem('current_detail', _data);
+                var index = layer.open({
+                    title: '维修凭证上传',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['80%', '80%'],
+                    content: '/page/table/order/submit1.html',
+                });
+            }
+            // else if (obj.event === 'pass') {
+            //     layer.confirm('通过该条申请吗?', function (index) {
+
+            //         //调用ajax接口给表单通过
+            //         layer.close(index);
+            //     });
+            // }
+        });
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>基本资料</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all" />
+    <link rel="stylesheet" href="../css/public.css" media="all" />
+    <style>
+      .layui-form-item .layui-input-company {
+        width: auto;
+        padding-right: 10px;
+        line-height: 38px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layuimini-container">
+      <div class="layuimini-main">
+        <div class="layui-form layuimini-form">
+            <input type="hidden" name="id" value="" id="id">
+            <input type="hidden" name="identify" value="" id="identify">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">用户头像</label>
+                  <div class="layui-upload">
+                    <button type="button" class="layui-btn" id="test1">上传图片</button>
+                    <div class="layui-upload-list">
+                      <a href="" id="avatar" target="_blank"><img class="layui-upload-img" style="width: 92px;height: 92px;margin: 0 10px 10px 150px;" id="demo1"></a>
+                      <input type="hidden" value=""  name="avatar" id = '_avatar'/>
+                      <p id="demoText"></p>
+                    </div>
+                  </div>   
+            </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label required">管理账号</label>
+            <div class="layui-input-block">
+              <input type="text"
+                name="num"
+                id="num"
+                lay-verify="required"
+                lay-reqtext="管理账号不能为空"
+                placeholder="请输入管理账号"
+                value=""
+                readonly
+                class="layui-input layui-disabled" 
+              />
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label required">手机</label>
+            <div class="layui-input-block">
+              <input type="number" name="mobile" ay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value=""
+                id="mobile" class="layui-input"
+              />
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+              <input
+                type="email"
+                name="email"
+                id = "email"
+                placeholder="请输入邮箱"
+                value=""
+                class="layui-input"
+              />
+            </div>
+          </div>
+          <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注信息</label>
+            <div class="layui-input-block">
+              <textarea
+                name="note"
+                class="layui-textarea"
+                id="note"
+                placeholder="请输入备注信息"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <div class="layui-input-block">
+              <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">
+                确认保存
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+    <script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+    <script src="../js/ApiConfig.js"></script>
+    <script>
+      layui.use(["form", "miniTab",'upload'], function () {
+        var form = layui.form,
+          layer = layui.layer,
+          upload = layui.upload,
+          $ = layui.$,
+          miniTab = layui.miniTab;
+
+        // 请求用户信息
+        $.ajax({
+            url: sxkBaseUrl+'/Index/getUserInfo',
+            type: 'POST',
+            dataType: 'json',
+            data: { 'identify' : localStorage.getItem('identify'), 'uid' : localStorage.getItem('uid')},
+            success: function (data) {
+                if (data.success) {
+                  $("#identify").val(localStorage.getItem('identify'));
+                  $.each(data.data, function (index, value) {
+                    if (index === 'avatar') {
+                      $("#demo1").attr('src', value);
+                      $("#avatar").attr('href', value);
+                    } else if (index == "note") {
+                      $("#"+index).text(value == null ? "暂无备注" : value);
+                    } else {
+                      $("#"+index).val(value);
+                    }
+                  });
+                  return false;
+                } else {
+                    layer.msg(data.msg, {
+                        icon: 2,
+                        time: 1000
+                    });
+                    return false;
+                }
+            }
+        });
+
+        //监听提交
+        form.on("submit(saveBtn)", function (data) {
+            // 数据更新
+            $.ajax({
+              url: sxkBaseUrl+'/Index/editUserInfo',
+              type: 'POST',
+              dataType: 'json',
+              data: data.field,
+              success: function (data) {
+                  if (data.success) {
+                    var index = layer.msg(data.msg,{
+                          icon : 1,
+                          time:2000
+                        }, function () {
+                        layer.close(index);
+                        miniTab.deleteCurrentByIframe();
+                      });
+                    return false;
+                  } else {
+                      layer.alert(data.msg, {
+                          icon: 2,
+                          time: 1000
+                      });
+                      return false;
+                  }
+              }
+          });
+        return false;
+        });
+
+        //普通图片上传
+        var uploadInst = upload.render({
+          elem: "#test1",
+          url: onlineBaseUrl+"/api/fileUpload", //改成您自己的上传接口
+          headers: {Authorization:localStorage.getItem('token')},
+          before: function (obj) {
+            //预读本地文件示例，不支持ie8
+            obj.preview(function (index, file, result) {
+              $("#demo1").attr("src", result); //图片链接（base64）
+            });
+          },
+          done: function (res) {
+            //如果上传失败
+            if (res.code === 200 && res.status === "success") {
+              $("#_avatar").val(res.data.fileName);
+            }
+            //上传成功
+          },
+          error: function () {
+            //演示失败状态，并实现重传
+            var demoText = $("#demoText");
+            demoText.html(
+              '<span style="color: #FF5722;margin-left:150px;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>'
+            );
+            demoText.find(".demo-reload").on("click", function () {
+              uploadInst.upload();
+            });
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Welcome</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="./lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="./lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <link rel="stylesheet" href="./css/public.css" media="all">
+    <script src="js/ApiConfig.js"></script>
+    <style>
+        .layui-card {
+            border: 1px solid #f2f2f2;
+            border-radius: 5px;
+        }
+
+        .icon {
+            margin-right: 10px;
+            color: #1aa094;
+        }
+
+        .icon-cray {
+            color: #ffb800 !important;
+        }
+
+        .icon-blue {
+            color: #1e9fff !important;
+        }
+
+        .icon-tip {
+            color: #ff5722 !important;
+        }
+
+        .layuimini-qiuck-module {
+            text-align: center;
+            margin-top: 10px
+        }
+
+        .layuimini-qiuck-module a i {
+            display: inline-block;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-radius: 2px;
+            font-size: 30px;
+            background-color: #F8F8F8;
+            color: #333;
+            transition: all .3s;
+            -webkit-transition: all .3s;
+        }
+
+        .layuimini-qiuck-module a cite {
+            position: relative;
+            top: 2px;
+            display: block;
+            color: #666;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .welcome-module {
+            width: 100%;
+            height: 210px;
+        }
+
+        .panel {
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+        }
+
+        .panel-body {
+            padding: 10px
+        }
+
+        .panel-title {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 12px;
+            color: inherit
+        }
+
+        .label {
+            display: inline;
+            padding: .2em .6em .3em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25em;
+            margin-top: .3em;
+        }
+
+        .layui-red {
+            color: red
+        }
+
+        .main_btn > p {
+            height: 40px;
+        }
+
+        .layui-bg-number {
+            background-color: #F8F8F8;
+        }
+
+        .layuimini-notice:hover {
+            background: #f6f6f6;
+        }
+
+        .layuimini-notice {
+            padding: 7px 16px;
+            clear: both;
+            font-size: 12px !important;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s ease-in-out;
+        }
+
+        .layuimini-notice-title,
+        .layuimini-notice-label {
+            padding-right: 70px !important;
+            text-overflow: ellipsis !important;
+            overflow: hidden !important;
+            white-space: nowrap !important;
+        }
+
+        .layuimini-notice-title {
+            line-height: 28px;
+            font-size: 14px;
+        }
+
+        .layuimini-notice-extra {
+            position: absolute;
+            top: 50%;
+            margin-top: -8px;
+            right: 16px;
+            display: inline-block;
+            height: 16px;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md8">
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md12">
+                        <div class="layui-card">
+                            <div class="layui-card-header"><i class="fa fa-warning icon"></i>数据统计</div>
+                            <div class="layui-card-body">
+                                <div class="welcome-module">
+                                    <div class="layui-row layui-col-space10" id="__counts">
+                                        <!-- 数据统计 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-md6">
+                        <div class="layui-card">
+                            <div class="layui-card-header"><i class="fa fa-credit-card icon icon-blue"></i>快捷入口
+                            </div>
+                            <div class="layui-card-body">
+                                <div class="welcome-module">
+                                    <div class="layui-row layui-col-space10 layuimini-qiuck" id="quickHref">
+
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;" layuimini-content-href="/sxk_apply.html?t_id=1"
+                                               data-title="表格示例" data-icon="fa fa-file-text">
+                                                <i class="fa fa-file-text"></i>
+                                                <cite>待审批查询</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;" layuimini-content-href="/sxk_apply.html?t_id=2"
+                                               data-title="已审批" data-icon="fa fa-gears">
+                                                <i class="fa fa-gears"></i>
+                                                <cite>未通过查询</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;" layuimini-content-href="/sxk_apply.html?t_id=3"
+                                               data-title="已通过" data-icon="fa fa-file-text">
+                                                <i class="fa fa-file-text"></i>
+                                                <cite>已通过查询</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;" layuimini-content-href="page/icon.html"
+                                               data-title="待维修" data-icon="fa fa-dot-circle-o">
+                                                <i class="fa fa-dot-circle-o"></i>
+                                                <cite>待维修查询</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;" layuimini-content-href="page/form.html"
+                                               data-title="已维修" data-icon="fa fa-calendar">
+                                                <i class="fa fa-calendar"></i>
+                                                <cite>已维修查询</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;" layuimini-content-href="page/button.html"
+                                               data-title="维修结束" data-icon="fa fa-snowflake-o">
+                                                <i class="fa fa-snowflake-o"></i>
+                                                <cite>维修结束查询</cite>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-col-md12">
+                        <div class="layui-card">
+                            <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>报表统计</div>
+                            <div class="layui-card-body">
+                                <div id="echarts-records" style="width: 100%;min-height:500px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-md4">
+
+                <div class="layui-card">
+                    <div class="layui-card-header"><i class="fa fa-bullhorn icon icon-tip"></i>系统公告</div>
+                    <h1>暂无公告</h1>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <!--                    <div class="layui-card-body layui-text">-->
+                    <!--                        <div class="layuimini-notice">-->
+                    <!--                            <div class="layuimini-notice-title">修改选项卡样式</div>-->
+                    <!--                            <div class="layuimini-notice-extra">2019-07-11 23:06</div>-->
+                    <!--                            <div class="layuimini-notice-content layui-hide">-->
+                    <!--                                界面足够简洁清爽。<br>-->
+                    <!--                                一个接口几行代码而已直接初始化整个框架，无需复杂操作。<br>-->
+                    <!--                                支持多tab，可以打开多窗口。<br>-->
+                    <!--                                支持无限级菜单和对font-awesome图标库的完美支持。<br>-->
+                    <!--                                失效以及报错菜单无法直接打开，并给出弹出层提示完美的线上用户体验。<br>-->
+                    <!--                                url地址hash定位，可以清楚看到当前tab的地址信息。<br>-->
+                    <!--                                刷新页面会保留当前的窗口，并且会定位当前窗口对应左侧菜单栏。<br>-->
+                    <!--                                移动端的友好支持。<br>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                        <div class="layuimini-notice">-->
+                    <!--                            <div class="layuimini-notice-title">新增系统404模板</div>-->
+                    <!--                            <div class="layuimini-notice-extra">2019-07-11 12:57</div>-->
+                    <!--                            <div class="layuimini-notice-content layui-hide">-->
+                    <!--                                界面足够简洁清爽。<br>-->
+                    <!--                                一个接口几行代码而已直接初始化整个框架，无需复杂操作。<br>-->
+                    <!--                                支持多tab，可以打开多窗口。<br>-->
+                    <!--                                支持无限级菜单和对font-awesome图标库的完美支持。<br>-->
+                    <!--                                失效以及报错菜单无法直接打开，并给出弹出层提示完美的线上用户体验。<br>-->
+                    <!--                                url地址hash定位，可以清楚看到当前tab的地址信息。<br>-->
+                    <!--                                刷新页面会保留当前的窗口，并且会定位当前窗口对应左侧菜单栏。<br>-->
+                    <!--                                移动端的友好支持。<br>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                        <div class="layuimini-notice">-->
+                    <!--                            <div class="layuimini-notice-title">新增treetable插件和菜单管理样式</div>-->
+                    <!--                            <div class="layuimini-notice-extra">2019-07-05 14:28</div>-->
+                    <!--                            <div class="layuimini-notice-content layui-hide">-->
+                    <!--                                界面足够简洁清爽。<br>-->
+                    <!--                                一个接口几行代码而已直接初始化整个框架，无需复杂操作。<br>-->
+                    <!--                                支持多tab，可以打开多窗口。<br>-->
+                    <!--                                支持无限级菜单和对font-awesome图标库的完美支持。<br>-->
+                    <!--                                失效以及报错菜单无法直接打开，并给出弹出层提示完美的线上用户体验。<br>-->
+                    <!--                                url地址hash定位，可以清楚看到当前tab的地址信息。<br>-->
+                    <!--                                刷新页面会保留当前的窗口，并且会定位当前窗口对应左侧菜单栏。<br>-->
+                    <!--                                移动端的友好支持。<br>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                        <div class="layuimini-notice">-->
+                    <!--                            <div class="layuimini-notice-title">修改logo缩放问题</div>-->
+                    <!--                            <div class="layuimini-notice-extra">2019-07-04 11:02</div>-->
+                    <!--                            <div class="layuimini-notice-content layui-hide">-->
+                    <!--                                界面足够简洁清爽。<br>-->
+                    <!--                                一个接口几行代码而已直接初始化整个框架，无需复杂操作。<br>-->
+                    <!--                                支持多tab，可以打开多窗口。<br>-->
+                    <!--                                支持无限级菜单和对font-awesome图标库的完美支持。<br>-->
+                    <!--                                失效以及报错菜单无法直接打开，并给出弹出层提示完美的线上用户体验。<br>-->
+                    <!--                                url地址hash定位，可以清楚看到当前tab的地址信息。<br>-->
+                    <!--                                刷新页面会保留当前的窗口，并且会定位当前窗口对应左侧菜单栏。<br>-->
+                    <!--                                移动端的友好支持。<br>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                        <div class="layuimini-notice">-->
+                    <!--                            <div class="layuimini-notice-title">修复左侧菜单缩放tab无法移动</div>-->
+                    <!--                            <div class="layuimini-notice-extra">2019-06-17 11:55</div>-->
+                    <!--                            <div class="layuimini-notice-content layui-hide">-->
+                    <!--                                界面足够简洁清爽。<br>-->
+                    <!--                                一个接口几行代码而已直接初始化整个框架，无需复杂操作。<br>-->
+                    <!--                                支持多tab，可以打开多窗口。<br>-->
+                    <!--                                支持无限级菜单和对font-awesome图标库的完美支持。<br>-->
+                    <!--                                失效以及报错菜单无法直接打开，并给出弹出层提示完美的线上用户体验。<br>-->
+                    <!--                                url地址hash定位，可以清楚看到当前tab的地址信息。<br>-->
+                    <!--                                刷新页面会保留当前的窗口，并且会定位当前窗口对应左侧菜单栏。<br>-->
+                    <!--                                移动端的友好支持。<br>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                        <div class="layuimini-notice">-->
+                    <!--                            <div class="layuimini-notice-title">修复多模块菜单栏展开有问题</div>-->
+                    <!--                            <div class="layuimini-notice-extra">2019-06-13 14:53</div>-->
+                    <!--                            <div class="layuimini-notice-content layui-hide">-->
+                    <!--                                界面足够简洁清爽。<br>-->
+                    <!--                                一个接口几行代码而已直接初始化整个框架，无需复杂操作。<br>-->
+                    <!--                                支持多tab，可以打开多窗口。<br>-->
+                    <!--                                支持无限级菜单和对font-awesome图标库的完美支持。<br>-->
+                    <!--                                失效以及报错菜单无法直接打开，并给出弹出层提示完美的线上用户体验。<br>-->
+                    <!--                                url地址hash定位，可以清楚看到当前tab的地址信息。<br>-->
+                    <!--                                刷新页面会保留当前的窗口，并且会定位当前窗口对应左侧菜单栏。<br>-->
+                    <!--                                移动端的友好支持。<br>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                </div>
+
+                <div class="layui-card">
+                    <div class="layui-card-header"><i class="fa fa-fire icon"></i>版本信息</div>
+                    <div class="layui-card-body layui-text">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="100">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                            <tr>
+                                <td>学院信息</td>
+                                <td id="school">
+                                    南京晓庄学院
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>官网</td>
+                                <td>
+                                    <a href="http://www.njxzc.edu.cn/" target="_blank" alt="star">
+                                        南京晓庄学院
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>当前版本</td>
+                                <td>v2.0.0</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="layui-card">
+                    <div class="layui-card-header"><i class="fa fa-paper-plane-o icon"></i>学校简介</div>
+                    <div class="layui-card-body layui-text layadmin-text">
+                        <p style="text-indent: 2em;">
+                            南京晓庄学院是由江苏省和南京市共建的全日制本科院校。学校前身是伟大的人民教育家陶行知先生1927年3月创办的“晓庄试验乡村师范”，是我国乡村师范教育发祥地。2000年，南京师范专科学校、南京教育学院和南京市晓庄师范学校合并建立南京晓庄学院。2014年，南京幼儿高等师范学校并入。93年来，学校传承弘扬陶行知教育思想，形成了“教学做合一”的校训和“教人求真，学做真人”的校风，培育出“大爱、奉献、担当”的晓庄精神，为社会培养输送了10余万名基础教育师资和各类专门人才，涌现出数百名中小学特级教师、教学名师和教育管理者。
+                        </p>
+                        <p style="text-indent: 2em;">
+                            学校现有方山、莫愁两个校区和省级文保单位“行知园”（含陶行知纪念馆），校园面积1408亩。学校设有马克思主义学院、教师教育学院、幼儿师范学院、文学院、商学院、旅游与社会管理学院、外国语学院、新闻传播学院、信息工程学院/人工智能学院、电子工程学院、食品科学学院、环境科学学院、音乐学院、美术学院、体育学院等15个专业学院；设有47个本科招生专业，涉及教育学、文学、历史学、经济学、法学、理学、工学、管理学、艺术学等九大学科门类，其中，2个国家一流本科专业建设点、6个省一流本科专业建设点。全日制在籍本科学生18000余人。学校现有教职工1328人，其中高级职称教师514人，博士学位教师346人；另有柔性引进中国工程院院士、长江学者等38人...
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="./js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    layui.use(['layer', 'miniTab', 'echarts'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            miniTab = layui.miniTab,
+            echarts = layui.echarts;
+
+        // 表单数据请求
+        $.ajax({
+            url: sxkBaseUrl+'/Index/main',
+            type: 'POST',
+            dataType: 'json',
+            data: {'uid': localStorage.getItem('uid'), 'identify': localStorage.getItem('identify')},
+            success: function (data) {
+                if (data.success) {
+                    // 快捷导航
+                    if (data.data.quickHref) {
+                        // console.log(data.data.quickHref)
+                        $("#quickHref").empty();
+                        $.each(data.data.quickHref, function (index, value) {
+                            $("#quickHref").append('<div class="layui-col-xs3 layuimini-qiuck-module">\n' +
+                                '  <a href="javascript:;" layuimini-content-href="' + value.href + '"\n' +
+                                '     data-title="' + value.title + '" data-icon="' + value.icon + '">\n' +
+                                '           <i class="' + value.icon + '"></i>\n' +
+                                '               <cite>' + value.title + '</cite>\n' +
+                                '                </a>\n' +
+                                '            </div>');
+                        });
+                    }
+
+                    // 数据统计
+                    if (data.data.counts) {
+                        $("#__counts").empty();
+                        $.each(data.data.counts, function (index, value) {
+                            $("#__counts").append('<div class="layui-col-xs3">\n' +
+                                '                                            <div class="panel layui-bg-number">\n' +
+                                '                                                <div class="panel-body">\n' +
+                                '                                                    <div class="panel-title">\n' +
+                                '                                                        <span class="label pull-right layui-bg-blue">实时</span>\n' +
+                                '                                                        <h5>' + value.title + '</h5>\n' +
+                                '                                                    </div>\n' +
+                                '                                                    <div class="panel-content">\n' +
+                                '                                                        <h1 class="no-margins">' + value.nums + '</h1>\n' +
+                                '                                                        <small>总记录数</small>\n' +
+                                '                                                    </div>\n' +
+                                '                                                </div>\n' +
+                                '                                            </div>\n' +
+                                '                                        </div>');
+                        });
+                    }
+
+                    // echarts
+                    if (data.data.date && data.data.series && data.data.title) {
+                        const data_time = data.data.date;
+                        const data_title = data.data.title;
+                        const data_series = data.data.series;
+                        /**
+                         * 报表功能
+                         */
+                        var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+                        var optionRecords = {
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                // data: ['待审批', '已审批', '未通过', '待维修', '已维修', '维修结束']
+                                data :data_title
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            toolbox: {
+                                feature: {
+                                    saveAsImage: {}
+                                }
+                            },
+                            xAxis: {
+                                type: 'category',
+                                boundaryGap: false,
+                                // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                                data : data_time
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: data_series
+                            // series: [
+                            //     {
+                            //         name: '待审批',
+                            //         type: 'line',
+                            //         data: [120, 132, 101, 134, 90, 230, 210]
+                            //     },
+                            //     {
+                            //         name: '已审批',
+                            //         type: 'line',
+                            //         data: [220, 182, 191, 234, 290, 330, 310]
+                            //     },
+                            //     {
+                            //         name: '未通过',
+                            //         type: 'line',
+                            //         data: [150, 232, 201, 154, 190, 330, 410]
+                            //     },
+                            //     {
+                            //         name: '待维修',
+                            //         type: 'line',
+                            //         data: [320, 332, 301, 334, 390, 330, 320]
+                            //     },
+                            //     {
+                            //         name: '已维修',
+                            //         type: 'line',
+                            //         data: [820, 932, 901, 934, 1290, 1330, 1320]
+                            //     },
+                            //     {
+                            //         name: '维修结束',
+                            //         type: 'line',
+                            //         data: [820, 932, 901, 934, 1290, 1330, 1320]
+                            //     }
+                            // ]
+                        };
+                        echartsRecords.setOption(optionRecords);
+
+                        // echarts 窗口缩放自适应
+                        window.onresize = function () {
+                            echartsRecords.resize();
+                        }
+                    }
+                } else {
+                    layer.msg(data.msg, {
+                        icon: 2,
+                        time: 1000
+                    });
+                    return false;
+                }
+            }
+        });
+
+        miniTab.listen();
+
+        /**
+         * 查看公告信息
+         * 暂未使用
+         **/
+        $('body').on('click', '.layuimini-notice', function () {
+            var title = $(this).children('.layuimini-notice-title').text(),
+                noticeTime = $(this).children('.layuimini-notice-extra').text(),
+                content = $(this).children('.layuimini-notice-content').html();
+            var html = '<div style="padding:15px 20px; text-align:justify; line-height: 22px;border-bottom:1px solid #e2e2e2;background-color: #2f4056;color: #ffffff">\n' +
+                '<div style="text-align: center;margin-bottom: 20px;font-weight: bold;border-bottom:1px solid #718fb5;padding-bottom: 5px"><h4 class="text-danger">' + title + '</h4></div>\n' +
+                '<div style="font-size: 12px">' + content + '</div>\n' +
+                '</div>\n';
+            parent.layer.open({
+                type: 1,
+                title: '系统公告' + '<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">' + noticeTime + '</span>',
+                area: '300px;',
+                shade: 0.8,
+                id: 'layuimini-notice',
+                btn: ['查看', '取消'],
+                btnAlign: 'c',
+                moveType: 1,
+                content: html,
+                success: function (layero) {
+                    var btn = layero.find('.layui-layer-btn');
+                    btn.find('.layui-layer-btn0').attr({
+                        href: 'https://gitee.com/zhongshaofa/layuimini',
+                        target: '_blank'
+                    });
+                }
+            });
+        });
+    });
+</script>
+</body>
+
+</html>
