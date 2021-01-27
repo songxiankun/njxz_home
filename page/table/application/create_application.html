@@ -1,481 +1,566 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="utf-8">
-    <title>layui</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
-    <link rel="stylesheet" href="/css/public.css" media="all">
-</head>
+	<head>
+		<meta charset="utf-8">
+		<title>layui</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="/css/public.css" media="all">
+	</head>
 
-<body>
-    <div class="layuimini-container">
-        <div class="layuimini-main">
-            <div class="layui-text layui-text-center"
-                style="font-size: 25px; ;padding: 15px 0; text-align: center;height: 50px;line-height: 50px"> 机器维修申请表单
-            </div>
-            <!-- 内容区 -->
-            <form class="layui-form" style="width: 80%; margin: 0 auto;">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">机房信息</label>
-                    <div class="layui-input-inline">
-                        <select name="buildings" id="buildings" lay-filter="buildings" lay-verify="required" lay-search>
-                            <option disabled selected></option>
-                        </select>
-                    </div>
+	<body>
+		<div class="layuimini-container">
+			<div class="layuimini-main">
+				<div class="layui-text layui-text-center" style="font-size: 25px; ;padding: 15px 0; text-align: center;height: 50px;line-height: 50px">
+					机器维修申请表单
+				</div>
 
-                    <div class="layui-input-inline">
-                        <select name="floors" id="floors" lay-filter="floors" lay-search>
-                            <option disabled selected></option>
-                        </select>
-                    </div>
-                    
-                    <div class="layui-input-inline">
-                        <select name="rooms" id="rooms" lay-filter="rooms" lay-search>
-                            <option disabled selected></option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">机器编码</label>
-                    <div class="layui-input-block">
-                        <select name="ccode" id="ccode" lay-filter="ccode" lay-verify="required">
-                            <option disabled selected></option>
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-form-item" id="childCC" style="display: none">
-                    <!-- <label class="layui-form-label">问题描述</label> -->
-                    <!--            <div class="layui-input-block">-->
-                    <!--                <lable class="">-->
-                    <!--                    <input type="checkbox" class="layui-input layui-input-inline" name="mouse" title="鼠标" checked>-->
-                    <!--                </lable>-->
-                    <!--                <input type="text" name="title" required lay-verify="required" placeholder="请输入问题描述" autocomplete="off"-->
-                    <!--                       class="layui-input layui-input-inline" style="float: none; width: 40%">-->
-                    <!--            </div>-->
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">审核人员</label>
-                    <div class="layui-input-block">
-                        <select name="admin" id="admins" lay-verify="required">
-                            <option disabled selected></option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="layui-form-item">
-                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
-                        <legend></legend>
-                    </fieldset>
-                    <div class="layui-upload">
-                        <button type="button" class="layui-btn" id="test2">多图片上传</button>
-                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
-                            预览图：
-                            <div class="layui-upload-list" id="demo2"></div>
-                        </blockquote>
-                    </div>
-                </div>
-                <br><br>
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                    </div>
-                </div>
-                <br>
-                <br>
-                <br>
-            </form>
-        </div>
-    </div>
+				<!-- 根据机器号码查询消息 -->
+				<fieldset class="layui-elem-field site-demo-button" style="margin: 0px auto; width: 80%;">
+					<legend>根据设备编号查询</legend>
+					<div>
+						<br>
+						<form class="layui-form layui-form-pane" action="">
+							<div class="layui-form-item" style="margin-left: 5px;margin-right: 5px;">
+								<label class="layui-form-label">设备编号</label>
+								<div class="layui-input-block">
+									<input type="text" name="num" style="width: 90%;" autocomplete="off" placeholder="请输入唯一设备编号" class="layui-input">
+									<button style="position: absolute;right: 0px;top: 0;" lay-submit lay-filter="searchNum" class="layui-btn layui-btn-normal">立即查询</button>
+								</div>
+							</div>
+						</form>
+						<br>
+					</div>
+				</fieldset>
+				<br><br>
+				<!-- 内容区 -->
+				<fieldset class="layui-elem-field site-demo-button" style="margin: 0px auto; width: 80%;">
+					<legend>机器设备详情</legend>
+					<div>
+						<br>
+						<form class="layui-form" style="width: 80%; margin: 0 auto;">
+							<div class="layui-form-item">
+								<label class="layui-form-label">机房信息</label>
+								<div class="layui-input-inline">
+									<select name="buildings" id="buildings" lay-filter="buildings" lay-verify="required" lay-search>
+										<option disabled selected></option>
+									</select>
+								</div>
 
-    <script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-    <script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
-    <script src="/js/ApiConfig.js"></script>
-    <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
-    <script>
-        layui.use(['form', 'upload','miniTab'], function () {
-            var form = layui.form,
-                upload = layui.upload,
-                $ = layui.$,
-                miniTab = layui.miniTab;
+								<div class="layui-input-inline">
+									<select name="floors" id="floors" lay-filter="floors" lay-search>
+										<option disabled selected></option>
+									</select>
+								</div>
 
-            // 获取所有楼放信息 -- 首次加载使用
-            $.ajax({
-                // url: 'http://api.njxzc.edu.cn/Apply/getBuildingAndAdminInfo',
-                url: sxkBaseUrl+'/Apply/getBuildingAndAdminInfo',
+								<div class="layui-input-inline">
+									<select name="rooms" id="rooms" lay-filter="rooms" lay-search>
+										<option disabled selected></option>
+									</select>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">机器编码</label>
+								<div class="layui-input-block">
+									<select name="ccode" id="ccode" lay-filter="ccode" lay-verify="required">
+										<option disabled selected></option>
+									</select>
+								</div>
+							</div>
+							<div class="layui-form-item" id="childCC" style="display: none">
+								<!-- <label class="layui-form-label">问题描述</label> -->
+								<!--            <div class="layui-input-block">-->
+								<!--                <lable class="">-->
+								<!--                    <input type="checkbox" class="layui-input layui-input-inline" name="mouse" title="鼠标" checked>-->
+								<!--                </lable>-->
+								<!--                <input type="text" name="title" required lay-verify="required" placeholder="请输入问题描述" autocomplete="off"-->
+								<!--                       class="layui-input layui-input-inline" style="float: none; width: 40%">-->
+								<!--            </div>-->
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">审核人员</label>
+								<div class="layui-input-block">
+									<select name="admin" id="admins" lay-verify="required">
+										<option disabled selected></option>
+									</select>
+								</div>
+							</div>
 
-                type: 'post',
-                dataType: "json",
-                data: {},
-                success: function (data) {
-                    if (data.success) {
-                        $("#buildings").empty();
-                        $("#admins").empty();
-                        $("#buildings").append("<option disabled selected></option>");
-                        $("#admins").append("<option id='select_1' disabled selected></option>");
-                        $.each(data.data.buildings, function (index, value) {
-                            $("#buildings").append('<option value=' + value.id + '>' + value.name + '</option>>');
-                        });
-                        $.each(data.data.admins, function (index, value) {
-                            $("#admins").append('<option value=' + value.id+ '>' + value.num + "-" +value.realname  + '</option>>');
-                        });
-                        form.render('select'); //更新全部
-                        return false;
-                    } else {
-                        layer.msg(data.msg, {
-                            icon: 2,
-                            time: 1000
-                        });
-                        return false;
-                    }
-                },
-                error: function () {
-                    layer.alert('出错了, 请联系管理员!!!');
-                }
-            });
+							<div class="layui-form-item">
+								<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+									<legend></legend>
+								</fieldset>
+								<div class="layui-upload">
+									<button type="button" class="layui-btn" id="test2">多图片上传</button>
+									<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+										预览图：
+										<div class="layui-upload-list" id="demo2"></div>
+									</blockquote>
+								</div>
+							</div>
+							<br><br>
+							<div class="layui-form-item">
+								<div class="layui-input-block">
+									<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+									<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								</div>
+							</div>
+							<br>
+						</form>
+					</div>
+				</fieldset>
+			</div>
+		</div>
 
-            //监听提交
-            form.on('submit(formDemo)', function (data) {
-                // 获取数据
-                const buildingId = $("#buildings").val();
-                const enginRoomId =$("#rooms").val();
-                const deviceId = $("#ccode").val();
-                const userId = $("#admins").val();
+		<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="/js/ApiConfig.js"></script>
+		<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+		<script>
+			layui.use(['form', 'upload', 'miniTab'], function() {
+				var form = layui.form,
+					upload = layui.upload,
+					$ = layui.$,
+					miniTab = layui.miniTab;
 
-                if (buildingId == null) {
-                    layer.msg("请选择楼层", {
-                        icon: 2,
-                        time: 1000
-                    });
-                    return false;
-                }
+				// 获取所有楼放信息 -- 首次加载使用
+				$.ajax({
+					// url: 'http://api.njxzc.edu.cn/Apply/getBuildingAndAdminInfo',
+					url: sxkBaseUrl + '/Apply/getBuildingAndAdminInfo',
 
-                if (enginRoomId == null) {
-                    layer.msg("请选择机房编号", {
-                        icon: 2,
-                        time: 1000
-                    });
-                    return false;
-                }
+					type: 'post',
+					dataType: "json",
+					data: {},
+					success: function(data) {
+						if (data.success) {
+							$("#buildings").empty();
+							$("#admins").empty();
+							$("#buildings").append("<option disabled selected></option>");
+							$("#admins").append("<option id='select_1' disabled selected></option>");
+							$.each(data.data.buildings, function(index, value) {
+								$("#buildings").append('<option value=' + value.id + '>' + value.name + '</option>>');
+							});
+							$.each(data.data.admins, function(index, value) {
+								$("#admins").append('<option value=' + value.id + '>' + value.num + "-" + value.realname + '</option>>');
+							});
+							form.render('select'); //更新全部
+							return false;
+						} else {
+							layer.msg(data.msg, {
+								icon: 2,
+								time: 1000
+							});
+							return false;
+						}
+					},
+					error: function() {
+						layer.alert('出错了, 请联系管理员!!!');
+					}
+				});
+				
+				// 根据num查询机器信息
+				form.on('submit(searchNum)', function(data){
+					if (data.field.num === '') {
+						layer.msg("请输入设备唯一编号", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
+					
+					$.ajax({
+						url: sxkBaseUrl + '/Apply/getInfoByNum',
+						type: 'post',
+						data: data.field,
+						success: function(data) {
+							// if (data.success) {
+							// 	console.log(data)
+							// 	// $("#buildings").empty();
+							// 	// $("#admins").empty();
+							// 	// $("#buildings").append("<option disabled selected></option>");
+							// 	// $("#admins").append("<option id='select_1' disabled selected></option>");
+							// 	// $.each(data.data.buildings, function(index, value) {
+							// 	// 	$("#buildings").append('<option value=' + value.id + '>' + value.name + '</option>>');
+							// 	// });
+							// 	// $.each(data.data.admins, function(index, value) {
+							// 	// 	$("#admins").append('<option value=' + value.id + '>' + value.num + "-" + value.realname + '</option>>');
+							// 	// });
+							// 	// form.render('select'); //更新全部
+							// 	return false;
+							// } else {
+							// 	layer.msg(data.msg, {
+							// 		icon: 2,
+							// 		time: 1000
+							// 	});
+							// 	return false;
+							// }
+						},
+						error: function() {
+							layer.alert('出错了, 请联系管理员!!!');
+						}
+					});
+					return false;
+				});
 
-                if (deviceId == null) {
-                    layer.msg("请选择机器编号", {
-                        icon: 2,
-                        time: 1000
-                    });
-                    return false;
-                }
+				//监听提交
+				form.on('submit(formDemo)', function(data) {
+					// 获取数据
+					const buildingId = $("#buildings").val();
+					const enginRoomId = $("#rooms").val();
+					const deviceId = $("#ccode").val();
+					const userId = $("#admins").val();
 
-                if (userId == null) {
-                    layer.msg("请选择审核人员", {
-                        icon: 2,
-                        time: 1000
-                    });
-                    return false;
-                }
+					if (buildingId == null) {
+						layer.msg("请选择楼层", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
 
+					if (enginRoomId == null) {
+						layer.msg("请选择机房编号", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
 
-                var _total = 0;
-                var root = {};
-                var parents = [];
-                var subs = [];
-                var parent = {};
+					if (deviceId == null) {
+						layer.msg("请选择机器编号", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
 
-                root['total'] = 1
-                parent['id'] = $("#ccode").val()
-                parent['total'] = 0
-
-
-
-                for(var i = 0; i < $("._content").length; ++i)
-                {
-                    var sub = {};
-                    if (data.field[$("._content")[i]['attributes']['name'].value] != "") {
-                        _total++;
-                        sub['id'] = $("._content")[i]['attributes']['title_id'].value;
-                        sub['content'] = data.field[$("._content")[i]['attributes']['name'].value];
-                        subs.push(sub);
-                    }
-                }
-
-                if (subs.length == 0) {
-                    layer.msg("请填写设备详情", {
-                        icon: 2,
-                        time: 1000
-                    });
-                    return false;
-                }
-
-                parent['sub'] = subs
-                parents.push(parent)
-                root['parents'] = parents
-                parent['total'] = _total;
-                var deviceDetail = JSON.stringify(root);
-
-                var images = Array();
-                // 图片处理
-                for(var i = 0; i < $(".images").length; ++i) {
-                    images[i] = $(".images")[i].currentSrc;
-                }
-                images = JSON.stringify(images);
-
-                var data = {
-                    "buildingId" : buildingId,
-                    "enginRoomId":enginRoomId,
-                    "deviceId":deviceId,
-                    "updUser":userId,
-                    "images":images,
-                    "deviceDetail" : deviceDetail
-                };
-
-                // ajax提交
-                $.ajax({
-                    //  url: 'http://10.10.185.148:8080/api/applications/submit',
-                    url: javaBaseUrl+'/api/applications/submit',
-                    type: 'post',
-                    dataType: "json",
-                    headers: {Authorization: localStorage.getItem('token'), 'content-type': 'application/x-www-form-urlencoded'},
-                    data: data,
-                    success: function (data) {
-                        if (data.status) {
-                            layer.msg(data.msg, {
-                                icon: 1,
-                                time: 1000
-                            });
-                            //延迟1秒
-                            setTimeout(function () {
-                                miniTab.deleteCurrentByIframe();
-                            }, 2000);
-                            return false;
-                        } else {
-                            layer.msg(data.msg, {
-                                icon: 2,
-                                time: 1000
-                            });
-                            return false;
-                        }
-                    },
-                    error: function () {
-                        layer.alert('出错了, 请联系管理员!!!');
-                    }
-                });
-
-                return false;
-            });
+					if (userId == null) {
+						layer.msg("请选择审核人员", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
 
 
-            // 楼层变化
-            form.on('select(buildings)', function (data) {
-                const building_id = data.value;
-                let childCC = $("#childCC");
-                childCC.attr("display", 'none');
-                childCC.empty();
-                let floors = $("#floors");
-                let rooms = $("#rooms");
-                let ccode = $("#ccode");
-                floors.empty();
-                rooms.empty();
-                ccode.empty();
-                $.ajax({
-                    url: sxkBaseUrl+'/Apply/getFloors',
-                    //url: 'http://api.njxzc.edu.cn/Apply/getFloors',
-                    type: 'post',
-                    dataType: "json",
-                    data: {'id': building_id},
-                    success: function (data) {
-                        if (data.success) {
-                            console.log(data);
-                            floors.append("<option disabled selected></option>");
-                            for (var i = 1; i <= data.data.floors; ++i) {
-                                floors.append("<option value='" + i + "'>" + i + "楼</option>");
-                            }
-                            form.render('select'); //更新全部
-                            return false;
-                        } else {
-                            layer.msg(data.msg, {
-                                icon: 2,
-                                time: 1000
-                            });
-                            return false;
-                        }
-                    },
-                    error: function () {
-                        layer.alert('出错了, 请联系管理员!!!');
-                    }
-                });
-            });
+					var _total = 0;
+					var root = {};
+					var parents = [];
+					var subs = [];
+					var parent = {};
 
-            // 机房详细信息变化
-            form.on('select(floors)', function (data) {
-                const floor_id = data.value;
-                const building_id = $("#buildings").val();
-                if (building_id == null) {
-                    layer.msg("请选择楼层", {
-                        icon: 2,
-                        time: 1000
-                    });
-                    return false;
-                }
-                let ccode = $("#ccode");
-                ccode.empty();
-                let rooms = $("#rooms");
-                rooms.empty();
-                let childCC = $("#childCC");
-                childCC.css("display", 'none');
-                $.ajax({
-                    // url: 'http://api.njxzc.edu.cn/Apply/getRooms',
-                    url: sxkBaseUrl+'/Apply/getRooms',
-                    type: 'post',
-                    dataType: "json",
-                    data: {'building_id': building_id, 'floor_id': floor_id, 'admin_id': $("#token").val()},
-                    success: function (data) {
-                        if (data.success) {
-                            // console.log(data.data.rooms);
-                            rooms.append("<option disabled selected></option>");
-                            $.each(data.data.rooms, function (index, value) {
-                                rooms.append('<option value=' + value.id + '>' + value.name + '</option>>');
-                            });
-                            form.render('select'); //更新全部
-                            return false;
-                        } else {
-                            layer.msg(data.msg, {
-                                icon: 2,
-                                time: 1000
-                            });
-                            return false;
-                        }
-                    },
-                    error: function () {
-                        layer.alert('出错了, 请联系管理员!!!');
-                    }
-                });
-            });
-
-            // 机器编码详情信息
-            form.on('select(rooms)', function (data) {
-                const rooms_id = data.value;
-
-                if (rooms_id == null) {
-                    layer.msg("请选择机房", {
-                        icon: 2,
-                        time: 1000
-                    });
-                    return false;
-                }
-
-                let ccode = $("#ccode");
-                ccode.empty();
-                let childCC = $("#childCC");
-                childCC.css("display", 'none');
-                $.ajax({
-                    //url: 'http://api.njxzc.edu.cn/Apply/getCCode',
-                    url: sxkBaseUrl+'/Apply/getCCode',
-                    type: 'post',
-                    dataType: "json",
-                    data: {'room_id': rooms_id, 'admin_id': $("#token").val()},
-                    success: function (data) {
-                        if (data.success) {
-                            console.log(data.data.computerCodes);
-                            ccode.append("<option disabled selected></option>");
-                            $.each(data.data.computerCodes, function (index, value) {
-                                ccode.append('<option value=' + value.id + '>' + value.num + '-' + value.name + '</option>>');
-                            });
-                            form.render('select'); //更新全部
-                            return false;
-                        } else {
-                            layer.msg(data.msg, {
-                                icon: 2,
-                                time: 1000
-                            });
-                            return false;
-                        }
-                    },
-                    error: function () {
-                        layer.alert('出错了, 请联系管理员!!!');
-                    }
-                });
-            });
-
-            // 设备详情展示  查询子设备
-            form.on('select(ccode)', function (data) {
-                const code = data.value;
-                if (code == null) {
-                    layer.msg("请选择机器", {
-                        icon: 2,
-                        time: 1000
-                    });
-                    return false;
-                }
-                let childCC = $("#childCC");
-                childCC.empty();
-                $.ajax({
-                    //url: 'http://api.njxzc.edu.cn/Apply/getChildCC',
-                    url: sxkBaseUrl+'/Apply/getChildCC',
-                    type: 'post',
-                    dataType: "json",
-                    data: {'id': code, 'admin_id': $("#token").val()},
-                    success: function (data) {
-                        if (data.success) {
-                            childCC.css('display', 'block');
-                            // console.log(data.data.childCC);
-                            childCC.append('<label class="layui-form-label">问题描述</label>');
-                            $.each(data.data.childCC, function (index, value) {
-                                childCC.append(
-                                    '<div class="layui-input-block clearAll">\n' +
-                                    '<lable class="">\n' +
-                                    // '<input type="checkbox" class="layui-input layui-input-inline _checked" value="'+index+'" name="checked[]" title="'+value.name+'">\n' +
-                                    value.name +
-                                    ' : </lable>\n' +
-                                    '<input type="text" name="content[]"  placeholder="请输入问题描述" autocomplete="off"\n' +
-                                    ' class="layui-input layui-input-inline _content" title_id="'+value.id+'" title="'+value.name+'" style="float: none; width: 40%">\n' +
-                                    '</div>'
-                                );
-                            });
-                            form.render();
-                            return false;
-                        } else {
-                            layer.msg(data.msg, {
-                                icon: 2,
-                                time: 1000
-                            });
-                            return false;
-                        }
-                    },
-                    error: function () {
-                        layer.alert('出错了, 请联系管理员!!!');
-                    }
-                });
-            });
+					root['total'] = 1
+					parent['id'] = $("#ccode").val()
+					parent['total'] = 0
 
 
-            //多图片上传
-            upload.render({
-                elem: '#test2'
-                , url: onlineBaseUrl+'/api/fileUpload' //改成您自己的上传接口
-                // , url: 'http://10.10.185.148:8080/api/fileUpload'
 
-                , headers: {Authorization:'2333'}
-                , multiple: true
-                , before: function (obj) {
-                    // //预读本地文件示例，不支持ie8
-                    // obj.preview(function (index, file, result) {
-                    //     $('#demo2').append('<img width="150px" height="150px" src="' + result + '" alt="' + file.name + '" class="layui-upload-img hover_big">')
-                    // });
-                }
-                , done: function (res) {
-                    if (res.status)
-                    {
-                        // $('#demo2').append('<input name="file[]" type="file" style="display:none" value="'+res.data.fileName+'"/>');
-                        $('#demo2').append('<img width="150px" class="images" height="150px" src="' + res.data.fileName + '" class="layui-upload-img hover_big">')
-                    }
-                }
-            });
-        });
-    </script>
-</body>
+					for (var i = 0; i < $("._content").length; ++i) {
+						var sub = {};
+						if (data.field[$("._content")[i]['attributes']['name'].value] != "") {
+							_total++;
+							sub['id'] = $("._content")[i]['attributes']['title_id'].value;
+							sub['content'] = data.field[$("._content")[i]['attributes']['name'].value];
+							subs.push(sub);
+						}
+					}
+
+					if (subs.length == 0) {
+						layer.msg("请填写设备详情", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
+
+					parent['sub'] = subs
+					parents.push(parent)
+					root['parents'] = parents
+					parent['total'] = _total;
+					var deviceDetail = JSON.stringify(root);
+
+					var images = Array();
+					// 图片处理
+					for (var i = 0; i < $(".images").length; ++i) {
+						images[i] = $(".images")[i].currentSrc;
+					}
+					images = JSON.stringify(images);
+
+					var data = {
+						"buildingId": buildingId,
+						"enginRoomId": enginRoomId,
+						"deviceId": deviceId,
+						"updUser": userId,
+						"images": images,
+						"deviceDetail": deviceDetail
+					};
+
+					// ajax提交
+					$.ajax({
+						//  url: 'http://10.10.185.148:8080/api/applications/submit',
+						url: javaBaseUrl + '/api/applications/submit',
+						type: 'post',
+						dataType: "json",
+						headers: {
+							Authorization: localStorage.getItem('token'),
+							'content-type': 'application/x-www-form-urlencoded'
+						},
+						data: data,
+						success: function(data) {
+							if (data.status) {
+								layer.msg(data.msg, {
+									icon: 1,
+									time: 1000
+								});
+								//延迟1秒
+								setTimeout(function() {
+									miniTab.deleteCurrentByIframe();
+								}, 2000);
+								return false;
+							} else {
+								layer.msg(data.msg, {
+									icon: 2,
+									time: 1000
+								});
+								return false;
+							}
+						},
+						error: function() {
+							layer.alert('出错了, 请联系管理员!!!');
+						}
+					});
+
+					return false;
+				});
+
+
+				// 楼层变化
+				form.on('select(buildings)', function(data) {
+					const building_id = data.value;
+					let childCC = $("#childCC");
+					childCC.attr("display", 'none');
+					childCC.empty();
+					let floors = $("#floors");
+					let rooms = $("#rooms");
+					let ccode = $("#ccode");
+					floors.empty();
+					rooms.empty();
+					ccode.empty();
+					$.ajax({
+						url: sxkBaseUrl + '/Apply/getFloors',
+						//url: 'http://api.njxzc.edu.cn/Apply/getFloors',
+						type: 'post',
+						dataType: "json",
+						data: {
+							'id': building_id
+						},
+						success: function(data) {
+							if (data.success) {
+								console.log(data);
+								floors.append("<option disabled selected></option>");
+								for (var i = 1; i <= data.data.floors; ++i) {
+									floors.append("<option value='" + i + "'>" + i + "楼</option>");
+								}
+								form.render('select'); //更新全部
+								return false;
+							} else {
+								layer.msg(data.msg, {
+									icon: 2,
+									time: 1000
+								});
+								return false;
+							}
+						},
+						error: function() {
+							layer.alert('出错了, 请联系管理员!!!');
+						}
+					});
+				});
+
+				// 机房详细信息变化
+				form.on('select(floors)', function(data) {
+					const floor_id = data.value;
+					const building_id = $("#buildings").val();
+					if (building_id == null) {
+						layer.msg("请选择楼层", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
+					let ccode = $("#ccode");
+					ccode.empty();
+					let rooms = $("#rooms");
+					rooms.empty();
+					let childCC = $("#childCC");
+					childCC.css("display", 'none');
+					$.ajax({
+						// url: 'http://api.njxzc.edu.cn/Apply/getRooms',
+						url: sxkBaseUrl + '/Apply/getRooms',
+						type: 'post',
+						dataType: "json",
+						data: {
+							'building_id': building_id,
+							'floor_id': floor_id,
+							'admin_id': $("#token").val()
+						},
+						success: function(data) {
+							if (data.success) {
+								// console.log(data.data.rooms);
+								rooms.append("<option disabled selected></option>");
+								$.each(data.data.rooms, function(index, value) {
+									rooms.append('<option value=' + value.id + '>' + value.name + '</option>>');
+								});
+								form.render('select'); //更新全部
+								return false;
+							} else {
+								layer.msg(data.msg, {
+									icon: 2,
+									time: 1000
+								});
+								return false;
+							}
+						},
+						error: function() {
+							layer.alert('出错了, 请联系管理员!!!');
+						}
+					});
+				});
+
+				// 机器编码详情信息
+				form.on('select(rooms)', function(data) {
+					const rooms_id = data.value;
+
+					if (rooms_id == null) {
+						layer.msg("请选择机房", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
+
+					let ccode = $("#ccode");
+					ccode.empty();
+					let childCC = $("#childCC");
+					childCC.css("display", 'none');
+					$.ajax({
+						//url: 'http://api.njxzc.edu.cn/Apply/getCCode',
+						url: sxkBaseUrl + '/Apply/getCCode',
+						type: 'post',
+						dataType: "json",
+						data: {
+							'room_id': rooms_id,
+							'admin_id': $("#token").val()
+						},
+						success: function(data) {
+							if (data.success) {
+								console.log(data.data.computerCodes);
+								ccode.append("<option disabled selected></option>");
+								$.each(data.data.computerCodes, function(index, value) {
+									ccode.append('<option value=' + value.id + '>' + value.num + '-' + value.name + '</option>>');
+								});
+								form.render('select'); //更新全部
+								return false;
+							} else {
+								layer.msg(data.msg, {
+									icon: 2,
+									time: 1000
+								});
+								return false;
+							}
+						},
+						error: function() {
+							layer.alert('出错了, 请联系管理员!!!');
+						}
+					});
+				});
+
+				// 设备详情展示  查询子设备
+				form.on('select(ccode)', function(data) {
+					const code = data.value;
+					if (code == null) {
+						layer.msg("请选择机器", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
+					let childCC = $("#childCC");
+					childCC.empty();
+					$.ajax({
+						//url: 'http://api.njxzc.edu.cn/Apply/getChildCC',
+						url: sxkBaseUrl + '/Apply/getChildCC',
+						type: 'post',
+						dataType: "json",
+						data: {
+							'id': code,
+							'admin_id': $("#token").val()
+						},
+						success: function(data) {
+							if (data.success) {
+								childCC.css('display', 'block');
+								// console.log(data.data.childCC);
+								childCC.append('<label class="layui-form-label">问题描述</label>');
+								$.each(data.data.childCC, function(index, value) {
+									childCC.append(
+										'<div class="layui-input-block clearAll">\n' +
+										'<lable class="">\n' +
+										// '<input type="checkbox" class="layui-input layui-input-inline _checked" value="'+index+'" name="checked[]" title="'+value.name+'">\n' +
+										value.name +
+										' : </lable>\n' +
+										'<input type="text" name="content[]"  placeholder="请输入问题描述" autocomplete="off"\n' +
+										' class="layui-input layui-input-inline _content" title_id="' + value.id + '" title="' + value.name +
+										'" style="float: none; width: 40%">\n' +
+										'</div>'
+									);
+								});
+								form.render();
+								return false;
+							} else {
+								layer.msg(data.msg, {
+									icon: 2,
+									time: 1000
+								});
+								return false;
+							}
+						},
+						error: function() {
+							layer.alert('出错了, 请联系管理员!!!');
+						}
+					});
+				});
+
+
+				//多图片上传
+				upload.render({
+					elem: '#test2',
+					url: onlineBaseUrl + '/api/fileUpload' //改成您自己的上传接口
+						// , url: 'http://10.10.185.148:8080/api/fileUpload'
+
+						,
+					headers: {
+						Authorization: '2333'
+					},
+					multiple: true,
+					before: function(obj) {
+						// //预读本地文件示例，不支持ie8
+						// obj.preview(function (index, file, result) {
+						//     $('#demo2').append('<img width="150px" height="150px" src="' + result + '" alt="' + file.name + '" class="layui-upload-img hover_big">')
+						// });
+					},
+					done: function(res) {
+						if (res.status) {
+							// $('#demo2').append('<input name="file[]" type="file" style="display:none" value="'+res.data.fileName+'"/>');
+							$('#demo2').append('<img width="150px" class="images" height="150px" src="' + res.data.fileName +
+								'" class="layui-upload-img hover_big">')
+						}
+					}
+				});
+			});
+		</script>
+	</body>
 
 </html>
