@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>layui</title>
+		<title>机器维修申请表单</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -45,7 +45,7 @@
 							<div class="layui-form-item">
 								<label class="layui-form-label">机房信息</label>
 								<div class="layui-input-inline">
-									<select name="buildings" id="buildings" lay-filter="buildings" lay-verify="required" lay-search>
+									<select name="buildings" id="buildings" lay-search lay-filter="buildings" lay-verify="required" lay-search>
 										<option disabled selected></option>
 									</select>
 								</div>
@@ -65,7 +65,7 @@
 							<div class="layui-form-item">
 								<label class="layui-form-label">机器编码</label>
 								<div class="layui-input-block">
-									<select name="ccode" id="ccode" lay-filter="ccode" lay-verify="required">
+									<select name="ccode" id="ccode" lay-search lay-filter="ccode" lay-verify="required">
 										<option disabled selected></option>
 									</select>
 								</div>
@@ -126,42 +126,8 @@
 					$ = layui.$,
 					miniTab = layui.miniTab;
 
-				// 获取所有楼放信息 -- 首次加载使用
-				$.ajax({
-					// url: 'http://api.njxzc.edu.cn/Apply/getBuildingAndAdminInfo',
-					url: sxkBaseUrl + '/Apply/getBuildingAndAdminInfo',
 
-					type: 'post',
-					dataType: "json",
-					data: {},
-					success: function(data) {
-						if (data.success) {
-							$("#buildings").empty();
-							$("#admins").empty();
-							$("#buildings").append("<option disabled selected></option>");
-							$("#admins").append("<option id='select_1' disabled selected></option>");
-							$.each(data.data.buildings, function(index, value) {
-								$("#buildings").append('<option value=' + value.id + '>' + value.name + '</option>>');
-							});
-							$.each(data.data.admins, function(index, value) {
-								$("#admins").append('<option value=' + value.id + '>' + value.num + "-" + value.realname + '</option>>');
-							});
-							form.render('select'); //更新全部
-							return false;
-						} else {
-							layer.msg(data.msg, {
-								icon: 2,
-								time: 1000
-							});
-							return false;
-						}
-					},
-					error: function() {
-						layer.alert('出错了, 请联系管理员!!!');
-					}
-				});
-				
-				// 根据num查询机器信息
+				// 根据机器编号num查询机器信息
 				form.on('submit(searchNum)', function(data){
 					if (data.field.num === '') {
 						layer.msg("请输入设备唯一编号", {
@@ -204,148 +170,46 @@
 					});
 					return false;
 				});
-
-				//监听提交
-				form.on('submit(formDemo)', function(data) {
-					// 获取数据
-					const buildingId = $("#buildings").val();
-					const enginRoomId = $("#rooms").val();
-					const deviceId = $("#ccode").val();
-					const userId = $("#admins").val();
-
-					if (buildingId == null) {
-						layer.msg("请选择楼层", {
-							icon: 2,
-							time: 1000
-						});
-						return false;
-					}
-
-					if (enginRoomId == null) {
-						layer.msg("请选择机房编号", {
-							icon: 2,
-							time: 1000
-						});
-						return false;
-					}
-
-					if (deviceId == null) {
-						layer.msg("请选择机器编号", {
-							icon: 2,
-							time: 1000
-						});
-						return false;
-					}
-
-					if (userId == null) {
-						layer.msg("请选择审核人员", {
-							icon: 2,
-							time: 1000
-						});
-						return false;
-					}
-
-
-					var _total = 0;
-					var root = {};
-					var parents = [];
-					var subs = [];
-					var parent = {};
-
-					root['total'] = 1
-					parent['id'] = $("#ccode").val()
-					parent['total'] = 0
-
-
-
-					for (var i = 0; i < $("._content").length; ++i) {
-						var sub = {};
-						if (data.field[$("._content")[i]['attributes']['name'].value] != "") {
-							_total++;
-							sub['id'] = $("._content")[i]['attributes']['title_id'].value;
-							sub['content'] = data.field[$("._content")[i]['attributes']['name'].value];
-							subs.push(sub);
+				
+				// 1、获取所有楼放信息 -- 首次加载使用
+				$.ajax({
+					// url: 'http://api.njxzc.edu.cn/Apply/getBuildingAndAdminInfo',
+					url: sxkBaseUrl + '/Apply/getBuildingAndAdminInfo',
+					type: 'post',
+					dataType: "json",
+					data: {'token' : localStorage.getItem('token')},
+					success: function(data) {
+						if (data.success) {
+							$("#buildings").empty();
+							$("#admins").empty();
+							$("#buildings").append("<option disabled selected></option>");
+							$("#admins").append("<option id='select_1' disabled selected></option>");
+							$.each(data.data.buildings, function(index, value) {
+								$("#buildings").append('<option value=' + value.id + '>' + value.name + '</option>>');
+							});
+							$.each(data.data.admins, function(index, value) {
+								$("#admins").append('<option value=' + value.id + '>' + value.num + "-" + value.realname + '</option>>');
+							});
+							form.render('select'); //更新全部
+							return false;
+						} else {
+							verifyToken(layer, data);
 						}
+					},
+					error: function() {
+						layer.alert('出错了, 请联系管理员!!!');
 					}
-
-					if (subs.length == 0) {
-						layer.msg("请填写设备详情", {
-							icon: 2,
-							time: 1000
-						});
-						return false;
-					}
-
-					parent['sub'] = subs
-					parents.push(parent)
-					root['parents'] = parents
-					parent['total'] = _total;
-					var deviceDetail = JSON.stringify(root);
-
-					var images = Array();
-					// 图片处理
-					for (var i = 0; i < $(".images").length; ++i) {
-						images[i] = $(".images")[i].currentSrc;
-					}
-					images = JSON.stringify(images);
-
-					var data = {
-						"buildingId": buildingId,
-						"enginRoomId": enginRoomId,
-						"deviceId": deviceId,
-						"updUser": userId,
-						"images": images,
-						"deviceDetail": deviceDetail
-					};
-
-					// ajax提交
-					$.ajax({
-						//  url: 'http://10.10.185.148:8080/api/applications/submit',
-						url: javaBaseUrl + '/api/applications/submit',
-						type: 'post',
-						dataType: "json",
-						headers: {
-							Authorization: localStorage.getItem('token'),
-							'content-type': 'application/x-www-form-urlencoded'
-						},
-						data: data,
-						success: function(data) {
-							if (data.status) {
-								layer.msg(data.msg, {
-									icon: 1,
-									time: 1000
-								});
-								//延迟1秒
-								setTimeout(function() {
-									miniTab.deleteCurrentByIframe();
-								}, 2000);
-								return false;
-							} else {
-								layer.msg(data.msg, {
-									icon: 2,
-									time: 1000
-								});
-								return false;
-							}
-						},
-						error: function() {
-							layer.alert('出错了, 请联系管理员!!!');
-						}
-					});
-
-					return false;
 				});
 
-
-				// 楼层变化
+				// 2、楼层变化
 				form.on('select(buildings)', function(data) {
 					const building_id = data.value;
 					let childCC = $("#childCC");
-					childCC.attr("display", 'none');
-					childCC.empty();
 					let floors = $("#floors");
 					let rooms = $("#rooms");
 					let ccode = $("#ccode");
+					childCC.attr("display", 'none');
+					childCC.empty();
 					floors.empty();
 					rooms.empty();
 					ccode.empty();
@@ -355,11 +219,11 @@
 						type: 'post',
 						dataType: "json",
 						data: {
-							'id': building_id
+							'id': building_id,
+							'token' : localStorage.getItem('token')
 						},
 						success: function(data) {
 							if (data.success) {
-								console.log(data);
 								floors.append("<option disabled selected></option>");
 								for (var i = 1; i <= data.data.floors; ++i) {
 									floors.append("<option value='" + i + "'>" + i + "楼</option>");
@@ -367,11 +231,7 @@
 								form.render('select'); //更新全部
 								return false;
 							} else {
-								layer.msg(data.msg, {
-									icon: 2,
-									time: 1000
-								});
-								return false;
+								verifyToken(layer, data);
 							}
 						},
 						error: function() {
@@ -380,7 +240,7 @@
 					});
 				});
 
-				// 机房详细信息变化
+				// 3、机房详细信息变化
 				form.on('select(floors)', function(data) {
 					const floor_id = data.value;
 					const building_id = $("#buildings").val();
@@ -405,23 +265,18 @@
 						data: {
 							'building_id': building_id,
 							'floor_id': floor_id,
-							'admin_id': $("#token").val()
+							'token': localStorage.getItem('token')
 						},
 						success: function(data) {
 							if (data.success) {
-								// console.log(data.data.rooms);
 								rooms.append("<option disabled selected></option>");
 								$.each(data.data.rooms, function(index, value) {
-									rooms.append('<option value=' + value.id + '>' + value.name + '</option>>');
+									rooms.append('<option value=' + value.id + '>机房' + value.num + '</option>>');
 								});
 								form.render('select'); //更新全部
 								return false;
 							} else {
-								layer.msg(data.msg, {
-									icon: 2,
-									time: 1000
-								});
-								return false;
+								verifyToken(layer, data);
 							}
 						},
 						error: function() {
@@ -430,9 +285,10 @@
 					});
 				});
 
-				// 机器编码详情信息
+				// 4、 获取机器编码详情信息
 				form.on('select(rooms)', function(data) {
 					const rooms_id = data.value;
+					const building_id = $("#buildings").val();
 
 					if (rooms_id == null) {
 						layer.msg("请选择机房", {
@@ -452,24 +308,20 @@
 						type: 'post',
 						dataType: "json",
 						data: {
+							'building_id' : building_id,
 							'room_id': rooms_id,
-							'admin_id': $("#token").val()
+							'token': localStorage.getItem('token')
 						},
 						success: function(data) {
 							if (data.success) {
-								console.log(data.data.computerCodes);
 								ccode.append("<option disabled selected></option>");
-								$.each(data.data.computerCodes, function(index, value) {
-									ccode.append('<option value=' + value.id + '>' + value.num + '-' + value.name + '</option>>');
+								$.each(data.data.computerData, function(index, value) {
+									ccode.append('<option value=' + value.id + '>' + value.num + '-' + value.device_name + '</option>>');
 								});
 								form.render('select'); //更新全部
 								return false;
 							} else {
-								layer.msg(data.msg, {
-									icon: 2,
-									time: 1000
-								});
-								return false;
+								verifyToken(layer, data);
 							}
 						},
 						error: function() {
@@ -478,7 +330,7 @@
 					});
 				});
 
-				// 设备详情展示  查询子设备
+				// 5、 设备详情展示  查询子设备
 				form.on('select(ccode)', function(data) {
 					const code = data.value;
 					if (code == null) {
@@ -491,19 +343,19 @@
 					let childCC = $("#childCC");
 					childCC.empty();
 					$.ajax({
-						//url: 'http://api.njxzc.edu.cn/Apply/getChildCC',
 						url: sxkBaseUrl + '/Apply/getChildCC',
 						type: 'post',
 						dataType: "json",
 						data: {
 							'id': code,
-							'admin_id': $("#token").val()
+							'token': localStorage.getItem('token')
 						},
 						success: function(data) {
 							if (data.success) {
 								childCC.css('display', 'block');
 								// console.log(data.data.childCC);
 								childCC.append('<label class="layui-form-label">问题描述</label>');
+								childCC.append('<input type="hidden" id="isOne" value="1" />');
 								$.each(data.data.childCC, function(index, value) {
 									childCC.append(
 										'<div class="layui-input-block clearAll">\n' +
@@ -520,11 +372,7 @@
 								form.render();
 								return false;
 							} else {
-								layer.msg(data.msg, {
-									icon: 2,
-									time: 1000
-								});
-								return false;
+								verifyToken(layer, data, childCC);
 							}
 						},
 						error: function() {
@@ -534,30 +382,169 @@
 				});
 
 
-				//多图片上传
+				//6、 多图片上传
 				upload.render({
-					elem: '#test2',
-					url: onlineBaseUrl + '/api/fileUpload' //改成您自己的上传接口
-						// , url: 'http://10.10.185.148:8080/api/fileUpload'
-
-						,
-					headers: {
-						Authorization: '2333'
-					},
-					multiple: true,
-					before: function(obj) {
+					elem: '#test2'
+					,url: sxkBaseUrl + '/Upload/uploadFile'			//改成您自己的上传接口
+					,data:{'token':localStorage.getItem('token')}
+					,accept:'images'
+					,acceptMime: 'image/*'								// 只显示图片
+					,multiple: true
+					,before: function(obj) {
 						// //预读本地文件示例，不支持ie8
 						// obj.preview(function (index, file, result) {
 						//     $('#demo2').append('<img width="150px" height="150px" src="' + result + '" alt="' + file.name + '" class="layui-upload-img hover_big">')
 						// });
-					},
-					done: function(res) {
-						if (res.status) {
-							// $('#demo2').append('<input name="file[]" type="file" style="display:none" value="'+res.data.fileName+'"/>');
-							$('#demo2').append('<img width="150px" class="images" height="150px" src="' + res.data.fileName +
+					}
+					,done: function(res) {
+						console.log(res)
+						if (res.success) {
+							$('#demo2').append('<img width="150px" class="images" height="150px" src="' + res.data.savePath +
 								'" class="layui-upload-img hover_big">')
 						}
 					}
+				});
+				
+				
+				//监听提交
+				form.on('submit(formDemo)', function(data) {
+					// 获取数据
+					const buildingId = $("#buildings").val();
+					const enginRoomId = $("#rooms").val();
+					const deviceId = $("#ccode").val();
+					const userId = $("#admins").val();
+				
+					if (buildingId == null) {
+						layer.msg("请选择楼层", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
+				
+					if (enginRoomId == null) {
+						layer.msg("请选择机房编号", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
+				
+					if (deviceId == null) {
+						layer.msg("请选择机器编号", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
+				
+					if (userId == null) {
+						layer.msg("请选择审核人员", {
+							icon: 2,
+							time: 1000
+						});
+						return false;
+					}
+				
+				
+					var _total = 0;
+					var root = {};
+					var parents = [];
+					var subs = [];
+					var parent = {};
+					var deviceDetail;
+					
+					// 含有子设备
+					if ($("#isOne").val() == 1) {
+						root['total'] = 1
+						parent['id'] = $("#ccode").val()
+						parent['total'] = 0
+						
+						for (var i = 0; i < $("._content").length; ++i) {
+							var sub = {};
+							if (data.field[$("._content")[i]['attributes']['name'].value] != "") {
+								_total++;
+								sub['id'] = $("._content")[i]['attributes']['title_id'].value;
+								sub['content'] = data.field[$("._content")[i]['attributes']['name'].value];
+								subs.push(sub);
+							}
+						}
+					
+						if (subs.length == 0) {
+							layer.msg("请填写设备详情", {
+								icon: 2,
+								time: 1000
+							});
+							return false;
+						}
+					
+						parent['sub'] = subs
+						parents.push(parent)
+						root['parents'] = parents
+						parent['total'] = _total;
+					} 
+					else
+					{
+						if ($("#content").val() == "") {
+							layer.msg("请填写设备问题描述", {
+								icon: 2,
+								time: 1000
+							});
+							return false;
+						}
+						root['total'] = 1;
+						parent['id'] = $("#ccode").val()
+						parent['content'] = $("#content").val()
+						parent['total'] = 0;
+						root['parents'] = parent
+					}
+					// 转化成字符串
+					deviceDetail = JSON.stringify(root);
+				
+					var images = Array();
+					// 图片处理
+					for (var i = 0; i < $(".images").length; ++i) {
+						images[i] = $(".images")[i].currentSrc;
+					}
+					images = JSON.stringify(images);
+				
+					var data = {
+						"building_id": buildingId,
+						"engin_room_id": enginRoomId,
+						"device_id": deviceId,
+						"upd_user": userId,
+						"images": images,
+						"device_detail": deviceDetail,
+						'token': localStorage.getItem('token')
+					};
+					$(this).addClass("layui-btn-disabled").attr("disabled",true);;
+					// ajax提交
+					$.ajax({
+						url: sxkBaseUrl + '/Apply/submit',
+						type: 'post',
+						data: data,
+						success: function(data) {
+							if (data.success) {
+								layer.msg(data.msg, {
+									icon: 1,
+									time: 1000
+								});
+								//延迟1秒
+								setTimeout(function() {
+									miniTab.deleteCurrentByIframe();
+								}, 2000);
+								return false;
+							} else {
+								verifyToken(layer, data);
+							}
+						},
+						error: function() {
+							$(this).removeClass("layui-btn-disabled").attr("disabled",false);;
+							layer.alert('出错了, 请联系管理员!!!');
+						}
+					});
+				
+					return false;
 				});
 			});
 		</script>

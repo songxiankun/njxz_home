@@ -5,11 +5,14 @@ layui.use(['form', 'jquery'], function () {
     var $ = layui.jquery,
         form = layui.form,
         layer = layui.layer;
-        if (localStorage.getItem("token")) {
-            location.href = './index.html';
-        }
-    // 登录过期的时候，跳出ifram框架
-    if (top.location != self.location) top.location = self.location;
+    
+	// 检测token信息
+	if (localStorage.getItem("token")) {
+       location.href = './index.html';
+    }
+		
+	// 登录过期的时候，跳出ifram框架
+	if (top.location != self.location) top.location = self.location;
     // 显示密码
     $('.bind-password').on('click', function () {
         if ($(this).hasClass('icon-5')) {
@@ -44,15 +47,8 @@ layui.use(['form', 'jquery'], function () {
             layer.msg('用户身份不能为空');
             return false;
         }
-        // if (data.captcha == '') {
-        //     layer.msg('验证码不能为空');
-        //     return false;
-        // }
-        // layer.msg('登录成功', function () {
-        //     console.log(data)
-        // });
-        $.ajax({
-            // url: 'http://api.njxzc.edu.cn/Login/login',
+        // 发送ajax请求登陆
+		$.ajax({
             url: sxkBaseUrl+'/Login/login',
             type: 'POST',
             dataType: 'json',
@@ -63,11 +59,9 @@ layui.use(['form', 'jquery'], function () {
                         icon: 1,
                         time: 1000
                     });
-                    // 存储cookie
+                    // 存储cookie--token
                     localStorage.setItem('token', data.data.token);
-                    localStorage.setItem('identify', data.data.identify);
-                    localStorage.setItem('realname', data.data.realname);
-                    localStorage.setItem('uid', data.data.id);
+                    
                     //延迟1秒
                     setTimeout(function () {
                         window.location.href = "index.html";

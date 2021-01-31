@@ -404,7 +404,7 @@
             url: sxkBaseUrl+'/Index/main',
             type: 'POST',
             dataType: 'json',
-            data: {'uid': localStorage.getItem('uid'), 'identify': localStorage.getItem('identify')},
+            data: {'token': localStorage.getItem('token')},
             success: function (data) {
                 if (data.success) {
                     // 快捷导航
@@ -457,7 +457,6 @@
                                 trigger: 'axis'
                             },
                             legend: {
-                                // data: ['待审批', '已审批', '未通过', '待维修', '已维修', '维修结束']
                                 data :data_title
                             },
                             grid: {
@@ -474,45 +473,12 @@
                             xAxis: {
                                 type: 'category',
                                 boundaryGap: false,
-                                // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
                                 data : data_time
                             },
                             yAxis: {
                                 type: 'value'
                             },
                             series: data_series
-                            // series: [
-                            //     {
-                            //         name: '待审批',
-                            //         type: 'line',
-                            //         data: [120, 132, 101, 134, 90, 230, 210]
-                            //     },
-                            //     {
-                            //         name: '已审批',
-                            //         type: 'line',
-                            //         data: [220, 182, 191, 234, 290, 330, 310]
-                            //     },
-                            //     {
-                            //         name: '未通过',
-                            //         type: 'line',
-                            //         data: [150, 232, 201, 154, 190, 330, 410]
-                            //     },
-                            //     {
-                            //         name: '待维修',
-                            //         type: 'line',
-                            //         data: [320, 332, 301, 334, 390, 330, 320]
-                            //     },
-                            //     {
-                            //         name: '已维修',
-                            //         type: 'line',
-                            //         data: [820, 932, 901, 934, 1290, 1330, 1320]
-                            //     },
-                            //     {
-                            //         name: '维修结束',
-                            //         type: 'line',
-                            //         data: [820, 932, 901, 934, 1290, 1330, 1320]
-                            //     }
-                            // ]
                         };
                         echartsRecords.setOption(optionRecords);
 
@@ -522,11 +488,7 @@
                         }
                     }
                 } else {
-                    layer.msg(data.msg, {
-                        icon: 2,
-                        time: 1000
-                    });
-                    return false;
+                    verifyToken(layer, data);
                 }
             }
         });
