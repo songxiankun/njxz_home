@@ -397,7 +397,6 @@
 						// });
 					}
 					,done: function(res) {
-						console.log(res)
 						if (res.success) {
 							$('#demo2').append('<img width="150px" class="images" height="150px" src="' + res.data.savePath +
 								'" class="layui-upload-img hover_big">')
@@ -517,7 +516,7 @@
 						"device_detail": deviceDetail,
 						'token': localStorage.getItem('token')
 					};
-					$(this).addClass("layui-btn-disabled").attr("disabled",true);;
+					$(this).addClass("layui-btn-disabled").attr("disabled",true);
 					// ajax提交
 					$.ajax({
 						url: sxkBaseUrl + '/Apply/submit',
@@ -533,6 +532,7 @@
 								setTimeout(function() {
 									miniTab.deleteCurrentByIframe();
 								}, 2000);
+								window.location.reload(true);
 								return false;
 							} else {
 								verifyToken(layer, data);

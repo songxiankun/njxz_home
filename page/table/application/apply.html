@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>layui</title>
+    <title>维修</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -88,15 +88,15 @@
         var _url = "";
         if (flag == 1) {
             //_url = "http://api.njxzc.edu.cn/RepairApplication/getApplyLists?t_id=1&uid="+localStorage.getItem('uid');
-            _url = sxkBaseUrl+"/RepairApplication/getApplyLists?t_id=1&uid="+localStorage.getItem('uid');
+            _url = sxkBaseUrl+"/RepairApplication/getApplyLists?t_id=1&token="+localStorage.getItem('token');
             _toolbar = '#currentTableBar';
         } else if (flag == 2) {
             //_url = "http://api.njxzc.edu.cn/RepairApplication/getApplyLists?t_id=2&uid="+localStorage.getItem('uid');
-            _url = sxkBaseUrl+"/RepairApplication/getApplyLists?t_id=2&uid="+localStorage.getItem('uid');
+            _url = sxkBaseUrl+"/RepairApplication/getApplyLists?t_id=2&token="+localStorage.getItem('token');
             _toolbar = '#currentTableBar2';
         } else if (flag == 3) {
             //_url = "http://api.njxzc.edu.cn/RepairApplication/getApplyLists?t_id=3&uid="+localStorage.getItem('uid');
-            _url = sxkBaseUrl+"/RepairApplication/getApplyLists?t_id=3&uid="+localStorage.getItem('uid');
+            _url = sxkBaseUrl+"/RepairApplication/getApplyLists?t_id=3&token="+localStorage.getItem('token');
             _toolbar = '#currentTableBar3';
         } else {
             layer.msg("请求错误", {

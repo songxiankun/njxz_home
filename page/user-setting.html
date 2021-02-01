@@ -23,8 +23,6 @@
     <div class="layuimini-container">
       <div class="layuimini-main">
         <div class="layui-form layuimini-form">
-            <input type="hidden" name="id" value="" id="id">
-            <input type="hidden" name="identify" value="" id="identify">
             <div class="layui-form-item">
                 <label class="layui-form-label required">用户头像</label>
                   <div class="layui-upload">
@@ -55,7 +53,7 @@
           <div class="layui-form-item">
             <label class="layui-form-label required">手机</label>
             <div class="layui-input-block">
-              <input type="number" name="mobile" ay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value=""
+              <input type="number" name="mobile" lay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value=""
                 id="mobile" class="layui-input"
               />
             </div>
@@ -83,6 +81,7 @@
                 placeholder="请输入备注信息"
               ></textarea>
             </div>
+			<input type="hidden" value="" id="token" name="token">
           </div>
 
           <div class="layui-form-item">
@@ -106,15 +105,17 @@
           $ = layui.$,
           miniTab = layui.miniTab;
 
+
+		$("#token").val(localStorage.getItem('token'))
+
         // 请求用户信息
         $.ajax({
             url: sxkBaseUrl+'/Index/getUserInfo',
             type: 'POST',
             dataType: 'json',
-            data: { 'identify' : localStorage.getItem('identify'), 'uid' : localStorage.getItem('uid')},
+            data: { 'token' : localStorage.getItem('token')},
             success: function (data) {
                 if (data.success) {
-                  $("#identify").val(localStorage.getItem('identify'));
                   $.each(data.data, function (index, value) {
                     if (index === 'avatar') {
                       $("#demo1").attr('src', value);
@@ -169,8 +170,8 @@
         //普通图片上传
         var uploadInst = upload.render({
           elem: "#test1",
-          url: onlineBaseUrl+"/api/fileUpload", //改成您自己的上传接口
-          headers: {Authorization:localStorage.getItem('token')},
+          url: sxkBaseUrl + '/Upload/uploadFile', //改成您自己的上传接口
+		  data:{'token':localStorage.getItem('token')},
           before: function (obj) {
             //预读本地文件示例，不支持ie8
             obj.preview(function (index, file, result) {
@@ -179,8 +180,8 @@
           },
           done: function (res) {
             //如果上传失败
-            if (res.code === 200 && res.status === "success") {
-              $("#_avatar").val(res.data.fileName);
+            if (res.success) {
+              $("#_avatar").val(res.data.savePath);
             }
             //上传成功
           },

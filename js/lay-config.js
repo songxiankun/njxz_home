@@ -47,8 +47,8 @@ function verifyToken(layer, data, object_ = null)
 	if (data.code == 404)  // token 问题
 	{
 		layer.msg(data.msg, {
-			icon: 1,
-			time: 1500
+			icon: 2,
+			time: 2000
 		},function(){
 			 // 删除cookie
 			 localStorage.removeItem('token');
