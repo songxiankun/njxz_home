@@ -124,7 +124,7 @@
   width: 428px;
   background: #fff;
   border-radius: 0 0 12px 12px;
-  padding-bottom: 53px;
+  padding-bottom: 3%;
 }
 .login-main .login-bottom .center {
   width: 288px;
@@ -256,4 +256,60 @@ div.layui-unselect {
 .layui-form-select .layui-edge{
     margin-top: 8px;
     right: -5px;
+}
+
+a.register_tips {
+  cursor: pointer;
+  color: blue;
+  font-size: 13px;
+}
+
+a:hover {
+    color: purple;
+}
+
+a:link {
+  color: red;
+}
+
+/* ----- Media queries ----- */
+
+@media (max-width: 1200px) {
+
+  .register form h2 { background: url(/images/pencil.png) 20px 6px no-repeat; }
+
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+
+  .register form h2 { background: none; }
+
+}
+
+@media (max-width: 767px) {
+
+  body { padding-left: 0; padding-right: 0; }
+
+  .logo, .links { text-align: center; }
+
+  .links { padding-bottom: 5px; }
+
+  .logo h1 { padding-left: 0; }
+
+  .links a.home { margin-left: 0; }
+
+  .links a.blog { margin-right: 0; }
+
+  .register-container { padding-left: 20px; padding-right: 20px; }
+
+  .register form h2 { background: none; }
+
+  .iphone images { display: none; }
+
+}
+
+@media (max-width: 480px) {
+
+  .register form button { width: 97%; }
+
 }
