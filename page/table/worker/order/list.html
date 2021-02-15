@@ -22,7 +22,7 @@
         </script> -->
 
         <script type="text/html" id="tableBar_0">
-            <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="take">&nbsp;立即接单&nbsp;</a>
+            <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="take">&nbsp;开始接单&nbsp;</a>
             <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">&nbsp;查看详情&nbsp;</a>
         </script>
 
@@ -70,8 +70,7 @@
 
         table.render({
             elem: '#currentTableId',
-            url: javaBaseUrl + 'api/orders/user?status=' + status,
-            headers: {Authorization: localStorage.getItem('token')},
+            url: javaBaseUrl + 'api/orders/user?status=' + status + "&token=" + localStorage.getItem('token'),
             parseData: function(res){ //res 即为原始返回的数据
                 return {
                     "code": res.code === 200 ? 0 : 500, //解析接口状态
@@ -92,7 +91,7 @@
                 {field: 'departmentName', width: 130, title: '学院'},
                 {field: 'enginRoomName', width: 110, title: '实验室'},
                 {field: 'adminName', title: '申请人', width: 80},
-                {field: 'signName', title: '负责人', width: 80},
+                {field: 'principalName', title: '负责人', width: 80},
                 {field: 'detail', width: 200, title: '问题描述', sort: true},
                 {field: 'orderTime', width: 200, title: '生成时间', sort: true},
                 {field: 'updTime', width: 200, title: '更新时间', sort: true, templet: function(d){
@@ -185,39 +184,47 @@
                     content: '/page/table/worker/order/detail_' + status + '.html',
                 });
             } else if(obj.event === 'take') {
-                layer.confirm('确定要接下此订单?', function (index) {
-                    //调用ajax接口给表单通过
-                    $.ajax({
-                        url: javaBaseUrl + "api/orders/user/take",
-                        headers: {Authorization: localStorage.getItem('token')},
-                        data: {id: orderId},
-                        dataType: "json",
-                        type: "POST",
-                        success: function (res) {
-                            console.log(res);
-                            layer.closeAll();
-                            if (res.code == 200) {
-                                layer.msg(res.msg, {icon: 1, time: 400}, function(){
-                                    window.location.reload();
-                                });
-                            } else {
-                                layer.msg(res.msg, {icon: 5});
-                            }
-                        },
-                        error: function () {
-                            layer.msg("请求异常", {icon: 5});
-                        }
-                    });
-                    layer.close(index);
+                var index = layer.open({
+                    title: '',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['50%', '85%'],
+                    content: '/page/table/application/recive_application.html?order_id=14&app_id=6&uid=1',
                 });
+                // layer.confirm('确定要接下此订单?', function (index) {
+                //     //调用ajax接口给表单通过
+                //     $.ajax({
+                //         url: javaBaseUrl + "api/orders/user/take",
+                //         headers: {Authorization: localStorage.getItem('token')},
+                //         data: {id: orderId},
+                //         dataType: "json",
+                //         type: "POST",
+                //         success: function (res) {
+                //             console.log(res);
+                //             layer.closeAll();
+                //             if (res.code == 200) {
+                //                 layer.msg(res.msg, {icon: 1, time: 400}, function(){
+                //                     window.location.reload();
+                //                 });
+                //             } else {
+                //                 layer.msg(res.msg, {icon: 5});
+                //             }
+                //         },
+                //         error: function () {
+                //             layer.msg("请求异常", {icon: 5});
+                //         }
+                //     });
+                //     layer.close(index);
+                // });
 
             } else if(obj.event === 'start') {
                 layer.confirm('确定要开始维修?', function (index) {
                     //调用ajax接口给表单通过
                     $.ajax({
                         url: javaBaseUrl + "api/orders/user/start",
-                        headers: {Authorization: localStorage.getItem('token')},
-                        data: {id: orderId},
+                        data: {id: orderId, token: localStorage.getItem('token')},
                         dataType: "json",
                         type: "POST",
                         success: function (res) {

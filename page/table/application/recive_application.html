@@ -172,6 +172,8 @@
 
 				// 通过审批 order_id=7&app_id=1&uid=4
 				data = GetRequest();
+				//判断请求来源：QQ邮箱、直接复制URL、njxz_home后台(要做特殊处理)
+				let isFromHome = document.referrer.indexOf(location.host) != -1;
 				form.on('submit(btn-pass)', function() {
 					$.ajax({
 						url: sxkBaseUrl + '/RepairApplication/updateOrder',
@@ -180,6 +182,10 @@
 						dataType: 'json',
 						success:function(data) {
 							if (data.success) {
+								if (isFromHome) {
+									showMsgAndCloseFrame(data.msg, 2000, true);
+									return false;
+								}
 								layer.msg(data.msg, {
 									icon: 1,
 									time: 2000
@@ -208,6 +214,10 @@
 						dataType: 'json',
 						success:function(data) {
 							if (data.success) {
+								if (isFromHome) {
+									showMsgAndCloseFrame(data.msg, 2000, true);
+									return false;
+								}
 								layer.msg(data.msg, {
 									icon: 1,
 									time: 2000
