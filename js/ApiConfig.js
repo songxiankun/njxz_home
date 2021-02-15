@@ -1,5 +1,4 @@
-// var javaBaseUrl = 'http://10.24.216.223:8080/Maintain/';
-let javaBaseUrl = 'http://api.njxzc.edu.cn/'
-let sxkBaseUrl = 'http://api.njxzc.edu.cn/'
-let onlineBaseUrl = 'http://10.10.130.181:8080/'
-let homeUrl = "http://test.njxzc.edu.cn/index.html";
+
+let javaBaseUrl = 'http://127.0.0.1:8080/Maintain/'
+let sxkBaseUrl = 'http://api.yanwind.top'
+let homeUrl = "http://home.yanwind.top/index.html"

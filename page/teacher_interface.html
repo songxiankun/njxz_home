@@ -98,7 +98,7 @@
         table.render({
             elem: '#currentTableId',
            // url: 'http://10.24.216.223:8080/Maintain/api/orders/admin?status=' + status,
-            url: 'http://'+onlineBaseUrl+':8080/Maintain/api/orders/admin?status=' + status,
+            url: javaBaseUrl+':8080/Maintain/api/orders/admin?status=' + status,
             
             headers: {Authorization: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJuanh6Yy5lZHUuY24iLCJpYXQiOjE2MTAwODAyMDEsInN1YiI6IntcInJvbGVcIjo0LFwiaWRcIjo0fSIsImV4cCI6MTYxMjY3MjIwMX0.uuvqc7g7kTYeZDz_SR3CtWiFwxHGXQ3-pjSoxniZlYk'},
             parseData: function(res){ //res 即为原始返回的数据
