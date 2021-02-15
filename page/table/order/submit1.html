@@ -91,7 +91,7 @@
                     Authorization: localStorage.getItem('token'),
                     'content-type': 'application/x-www-form-urlencoded'
                 },
-                data: {id: id, image: images},
+                data: {id: id, image: images, token: localStorage.getItem('token')},
                 success: function (data) {
                     if (data.code == 200) {
                         closeWindow('提交成功！');
@@ -115,7 +115,7 @@
         //多图片上传
         upload.render({
             elem: '#test2'
-            , url: javaBaseUrl + '/api/fileUpload' //改成您自己的上传接口
+            , url: javaBaseUrl + '/api/fileUpload' + "?token=" + localStorage.getItem('token') //改成您自己的上传接口
             // , url: 'http://10.10.185.148:8080/api/fileUpload'
 
             , headers: {Authorization: localStorage.getItem('token')}

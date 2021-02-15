@@ -98,9 +98,7 @@
         table.render({
             elem: '#currentTableId',
             //url: 'http://10.24.216.223:8080/Maintain/api/orders/admin?status=' + status,
-            url: javaBaseUrl + 'api/orders/admin?status=' + status,
-            
-            headers: {Authorization: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJuanh6Yy5lZHUuY24iLCJpYXQiOjE2MTAwODAyMDEsInN1YiI6IntcInJvbGVcIjo0LFwiaWRcIjo0fSIsImV4cCI6MTYxMjY3MjIwMX0.uuvqc7g7kTYeZDz_SR3CtWiFwxHGXQ3-pjSoxniZlYk'},
+            url: javaBaseUrl + 'api/orders/admin?status=' + status + '&token=' + localStorage.getItem('token'),
             parseData: function(res){ //res 即为原始返回的数据
                 return {
                     "code": res.code === 200 ? 0 : 500, //解析接口状态
@@ -125,7 +123,7 @@
                 {field: 'detail', width: 200, title: '问题描述', sort: true},
                 // {field: 'images', width: 200, title: '图片',templet:'<div><img src="{{d.images[0]}}"></div>'},
                 {field: 'status', width: 120, title: '状态', sort: true},
-                {field:'addTime',width:120,title:'添加時間'},
+                {field:'addTime',width:120,title:'添加时间'},
                 {title: '操作', width: 150, toolbar: '#tableBar_' + status, align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
