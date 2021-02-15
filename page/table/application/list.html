@@ -66,8 +66,9 @@
         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
 
         <script type="text/html" id="tableBar_1">
-            <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="pass">立即批准</a>
-            <a class="layui-btn layui-btn-danger layui-btn-sm layui-btn-radius" lay-event="fail">不同意</a>
+<!--            <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="pass">立即批准</a>-->
+<!--            <a class="layui-btn layui-btn-danger layui-btn-sm layui-btn-radius" lay-event="fail">不同意</a>-->
+            <a class="layui-btn layui-btn-danger layui-btn-sm layui-btn-radius" lay-event="check">立即审批</a>
             <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">查看详情</a>
         </script>
 
@@ -111,9 +112,8 @@
 
         table.render({
             elem: '#currentTableId',
-            url: onlineBaseUrl + 'api/applications/approver?status=' + status_,
+            url: javaBaseUrl + 'api/applications/approver?status=' + status_ + "&token=" + localStorage.getItem('token'),
             // url: 'http://10.24.216.223:8080/Maintain/api/applications/approver?status=' + status,
-            headers: {Authorization: '2333'},
             parseData: function (res) { //res 即为原始返回的数据
                 return {
                     "code": res.code === 200 ? 0 : 500, //解析接口状态
@@ -273,6 +273,16 @@
                         });
                         layer.close(index);
                     });
+            } else if (obj.event === 'check') {
+                var index = layer.open({
+                    title: '',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['50%', '85%'],
+                    content: '/page/table/application/update_application.html?uid=' + localStorage.getItem('uid') + '&rid=' + data.id,
+                });
             }
         });
 

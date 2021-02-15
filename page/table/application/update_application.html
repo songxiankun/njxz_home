@@ -136,6 +136,8 @@
 				 * rid： 订单id
 				 */
 				var data = GetRequest();
+				//判断请求来源：QQ邮箱、直接复制URL、njxz_home后台(要做特殊处理)
+				let isFromHome = document.referrer.indexOf(location.host) != -1;
 				$.ajax({
 					url: sxkBaseUrl + '/RepairApplication/getApplyInfo',
 					type: 'post',
@@ -192,6 +194,11 @@
 						dataType: 'json',
 						success:function(data) {
 							if (data.success) {
+								//处理来自njxz_home的点击，显示msg，关闭frame，刷新parent
+								if (isFromHome) {
+									showMsgAndCloseFrame(data.msg, 1000, true);
+									return false;
+								}
 								layer.msg(data.msg, {
 									icon: 1,
 									time: 1000
@@ -222,6 +229,11 @@
 						dataType: 'json',
 						success:function(data) {
 							if (data.success) {
+								//处理来自njxz_home的点击，显示msg，关闭frame，刷新parent
+								if (isFromHome) {
+									showMsgAndCloseFrame(data.msg, 1000, true);
+									return false;
+								}
 								layer.msg(data.msg, {
 									icon: 1,
 									time: 2000
