@@ -191,7 +191,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['50%', '85%'],
-                    content: '/page/table/application/recive_application.html?order_id=14&app_id=6&uid=1',
+                    content: '/page/table/application/recive_application.html?order_id='+ data.id + '&app_id=' + data.appId + '&uid=' + localStorage.getItem('uid'),
                 });
                 // layer.confirm('确定要接下此订单?', function (index) {
                 //     //调用ajax接口给表单通过
