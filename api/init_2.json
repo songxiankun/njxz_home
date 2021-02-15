@@ -49,7 +49,7 @@
         },
         {
           "title": "维修单管理",
-          "href": "page/fix_interface.html?status=0",
+          "href": "",
           "icon": "fa fa-home",
           "target": "",
           "child": [
