@@ -150,6 +150,7 @@
 				success:function(data) {
 					if (data.success) {
 						$("#_username").html(data.data.data.realname);
+                        localStorage.setItem('uid', data.data.data.id);
 						const identify = data.data.data.role;	
 						var url_json = '';
 					
@@ -218,6 +219,7 @@
                 },function(){
                      // 删除cookie
                      localStorage.removeItem('token');
+                     localStorage.removeItem('uid');
                     //延迟1秒
                     setTimeout(function () {
                         window.location.href = "./login.html";
