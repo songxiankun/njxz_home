@@ -84,6 +84,26 @@ function verifyToken(layer, data, object_ = null)
 	}
 }
 
+/**
+ * 显示弹窗并关闭子窗口
+ * @param msg
+ * @param reload
+ */
+function showMsgAndCloseFrame(msg, time, reload) {
+	let index = layer.msg(msg, {
+		icon: 1,
+		time: time
+	}, function () {
+		// 关闭弹出层
+		layer.close(index);
+		let iframeIndex = parent.layer.getFrameIndex(window.name);
+		parent.layer.close(iframeIndex);
+		if (reload) {
+			parent.location.reload();
+		}
+	});
+}
+
 window.rootPath = (function (src) {
     src = document.scripts[document.scripts.length - 1].src;
     return src.substring(0, src.lastIndexOf("/") + 1);
