@@ -23,13 +23,25 @@
           "child": [
             {
               "title": "申请表单",
-              "href": "page/welcome-1.html",
+              "href": "page/table/application/create_application_teacher.html",
               "icon": "fa fa-tachometer",
               "target": "_self"
             },
             {
-              "title": "已申请",
-              "href": "page/welcome-2.html",
+              "title": "待审核",
+              "href": "page/table/application/apply.html?t_id=1",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "未通过",
+              "href": "page/table/application/apply.html?t_id=2",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "已通过",
+              "href": "page/table/application/apply.html?t_id=3",
               "icon": "fa fa-tachometer",
               "target": "_self"
             }

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>机房申请表单</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+	<link rel="stylesheet" href="/css/public.css" media="all">
+</head>
+
+<body>
+	<div class="layuimini-container">
+		<div class="layuimini-main">
+			<div class="layui-text layui-text-center"
+				style="font-size: 25px; ;padding: 15px 0; text-align: center;height: 50px;line-height: 50px">
+				机房申请表单
+			</div>
+
+			<!-- 根据机器号码查询消息 -->
+			<fieldset class="layui-elem-field site-demo-button" style="margin: 0px auto; width: 80%;">
+				<legend>根据机房查询</legend>
+				<div>
+					<br>
+					<form class="layui-form layui-form-pane" action="">
+						<div class="layui-form-item" style="margin-left: 5px;margin-right: 5px;">
+							<label class="layui-form-label">机房编号</label>
+							<div class="layui-input-block">
+								<input type="text" name="num" style="width: 90%;" autocomplete="off"
+									placeholder="请输入机房编号（tips: 403）" class="layui-input">
+								<button style="position: absolute;right: 0px;top: 0;" lay-submit lay-filter="searchNum"
+									class="layui-btn layui-btn-normal">立即查询</button>
+							</div>
+						</div>
+					</form>
+					<br>
+				</div>
+			</fieldset>
+			<br><br>
+			<!-- 内容区 -->
+			<fieldset class="layui-elem-field site-demo-button" style="margin: 0px auto; width: 80%;">
+				<legend>机房详情</legend>
+				<div>
+					<br>
+					<form class="layui-form" style="width: 90%; margin: 0 auto;">
+						<div class="layui-form-item">
+							<label class="layui-form-label">机房信息</label>
+							<!-- 楼名 -->
+							<div class="layui-input-inline">
+								<select name="buildings" id="buildings" lay-search lay-filter="buildings"
+									lay-verify="required" lay-search>
+									<option disabled selected></option>
+								</select>
+							</div>
+							<!-- 楼层 -->
+							<div class="layui-input-inline">
+								<select name="floors" id="floors" lay-filter="floors" lay-search>
+									<option disabled selected></option>
+								</select>
+							</div>
+							<!-- 机房 -->
+							<div class="layui-input-inline">
+								<select name="rooms" id="rooms" lay-filter="rooms" lay-search>
+									<option disabled selected></option>
+								</select>
+							</div>
+						</div>
+						<!-- 申请原因 -->
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">申请原因</label>
+							<div class="layui-input-block">
+								<textarea placeholder="请输入内容" name="notes" id="notes" class="layui-textarea"></textarea>
+							</div>
+						</div>
+
+						<!-- 机房负责人 -->
+						<div class="layui-form-item">
+							<label class="layui-form-label">机房负责人</label>
+							<div class="layui-input-block">
+								<input type="text" id="admins" placeholder="tips：自动选择机房负责人" required lay-verify="" readonly
+									autocomplete="off" class="layui-input layui-input-inline">
+								<input type="hidden" name="admin_id" id="admin_id" required lay-verify="" readonly
+									autocomplete="off" class="layui-input layui-input-inline">
+							</div>
+						</div>
+
+						<br><br>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+						<br>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+
+	<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+	<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+	<script src="/js/ApiConfig.js"></script>
+	<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+	<script>
+		layui.use(['form', 'upload', 'miniTab'], function () {
+			var form = layui.form,
+				upload = layui.upload,
+				$ = layui.$,
+				miniTab = layui.miniTab;
+
+
+			// 根据机器编号num查询机器信息
+			form.on('submit(searchNum)', function (data) {
+				if (data.field.num === '') {
+					layer.msg("请输入设备唯一编号", {
+						icon: 2,
+						time: 1000
+					});
+					return false;
+				}
+
+				$.ajax({
+					url: sxkBaseUrl + '/Apply/getInfoByNum',
+					type: 'post',
+					data: data.field,
+					success: function (data) {
+						// if (data.success) {
+						// 	console.log(data)
+						// 	// $("#buildings").empty();
+						// 	// $("#admins").empty();
+						// 	// $("#buildings").append("<option disabled selected></option>");
+						// 	// $("#admins").append("<option id='select_1' disabled selected></option>");
+						// 	// $.each(data.data.buildings, function(index, value) {
+						// 	// 	$("#buildings").append('<option value=' + value.id + '>' + value.name + '</option>>');
+						// 	// });
+						// 	// $.each(data.data.admins, function(index, value) {
+						// 	// 	$("#admins").append('<option value=' + value.id + '>' + value.num + "-" + value.realname + '</option>>');
+						// 	// });
+						// 	// form.render('select'); //更新全部
+						// 	return false;
+						// } else {
+						// 	layer.msg(data.msg, {
+						// 		icon: 2,
+						// 		time: 1000
+						// 	});
+						// 	return false;
+						// }
+					},
+					error: function () {
+						layer.alert('出错了, 请联系管理员!!!');
+					}
+				});
+				return false;
+			});
+
+			// 1、获取所有楼放信息 -- 首次加载使用
+			$.ajax({
+				url: sxkBaseUrl + '/EnginRoom/getBuildingAndAdminInfo',
+				type: 'post',
+				dataType: "json",
+				data: { 'token': localStorage.getItem('token') },
+				success: function (data) {
+					if (data.success) {
+						$("#buildings").empty();
+						$("#buildings").append("<option disabled selected></option>");
+						$.each(data.data.buildings, function (index, value) {
+							$("#buildings").append('<option value=' + value.id + '>' + value.name + '</option>>');
+						});
+						form.render('select'); //更新全部
+						return false;
+					} else {
+						verifyToken(layer, data);
+					}
+				},
+				error: function () {
+					layer.alert('出错了, 请联系管理员!!!');
+				}
+			});
+
+			// 2、楼层变化
+			form.on('select(buildings)', function (data) {
+				$("#admins").val("");
+				$("#admin_id").val("");
+				const building_id = data.value;
+				let floors = $("#floors");
+				let rooms = $("#rooms");
+				floors.empty();
+				rooms.empty();
+				$.ajax({
+					url: sxkBaseUrl + '/Apply/getFloors',
+					type: 'post',
+					dataType: "json",
+					data: {
+						'id': building_id,
+						'token': localStorage.getItem('token')
+					},
+					success: function (data) {
+						if (data.success) {
+							floors.append("<option disabled selected></option>");
+							for (var i = 1; i <= data.data.floors; ++i) {
+								floors.append("<option value='" + i + "'>" + i + "楼</option>");
+							}
+							form.render('select'); //更新全部
+							return false;
+						} else {
+							verifyToken(layer, data);
+						}
+					},
+					error: function () {
+						layer.alert('出错了, 请联系管理员!!!');
+					}
+				});
+			});
+
+			// 3、机房详细信息变化
+			form.on('select(floors)', function (data) {
+				$("#admins").val("");
+				$("#admin_id").val("");
+				const floor_id = data.value;
+				const building_id = $("#buildings").val();
+				if (building_id == null) {
+					layer.msg("请选择楼层", {
+						icon: 2,
+						time: 1000
+					});
+					return false;
+				}
+				let rooms = $("#rooms");
+				rooms.empty();
+				$.ajax({
+					url: sxkBaseUrl + '/EnginRoom/getRooms',
+					type: 'post',
+					dataType: "json",
+					data: {
+						'building_id': building_id,
+						'floor_id': floor_id,
+						'token': localStorage.getItem('token')
+					},
+					success: function (data) {
+						if (data.success) {
+							rooms.append("<option disabled selected></option>");
+							$.each(data.data.rooms, function (index, value) {
+								rooms.append('<option value=' + value.id + '>机房' + value.num + '</option>>');
+							});
+							form.render('select'); //更新全部
+							return false;
+						} else {
+							verifyToken(layer, data);
+						}
+					},
+					error: function () {
+						layer.alert('出错了, 请联系管理员!!!');
+					}
+				});
+			});
+
+			// 4、 获取当前机房负责人
+			form.on('select(rooms)', function (data) {
+				$("#admins").val("");
+				$("#admin_id").val("");
+				const rooms_id = data.value;
+				const building_id = $("#buildings").val();
+
+				if (rooms_id == null) {
+					layer.msg("请选择机房", {
+						icon: 2,
+						time: 1000
+					});
+					return false;
+				}
+
+				var admins = $("#admins");
+
+				$.ajax({
+					url: sxkBaseUrl + '/EnginRoom/getAdminByRoomID',
+					type: 'post',
+					dataType: "json",
+					data: {
+						'building_id': building_id,
+						'room_id': rooms_id,
+						'token': localStorage.getItem('token')
+					},
+					success: function (data) {
+						if (data.success) {
+							$("#admin_id").val(data.data.id);
+							admins.val(data.data.num + '-' + data.data.realname);
+							form.render('select'); //更新全部
+							return false;
+						} else {
+							verifyToken(layer, data);
+						}
+					},
+					error: function () {
+						layer.alert('出错了, 请联系管理员!!!');
+					}
+				});
+			});
+
+
+			//监听提交
+			form.on('submit(formDemo)', function (data) {
+				// 获取数据
+				// {buildings: "1", floors: "2", rooms: "465", notes: "31213", admin_id: "10"}
+				var data = data.field;
+				if (data.buildings == "") {
+					layer.msg("请选择楼", {
+						icon: 2,
+						time: 1000
+					});
+					return false;
+				}
+
+				if (data.floors == "") {
+					layer.msg("请选择楼层", {
+						icon: 2,
+						time: 1000
+					});
+					return false;
+				}
+
+				if (data.rooms == "") {
+					layer.msg("请选择机房编号", {
+						icon: 2,
+						time: 1000
+					});
+					return false;
+				}
+
+				if (data.notes == "") {
+					layer.msg("请选择申请详情", {
+						icon: 2,
+						time: 1000
+					});
+					return false;
+				}
+
+				if (data.admin_id == "") {
+					layer.msg("请选择审核人员", {
+						icon: 2,
+						time: 1000
+					});
+					return false;
+				}
+				// ajax提交
+				$.ajax({
+					url: sxkBaseUrl + '/EnginRoom/submit?token='+localStorage.getItem("token"),
+					type: 'post',
+					data: data,
+					success: function (data) {
+						console.log(data)
+						// if (data.success) {
+						// 	layer.msg(data.msg, {
+						// 		icon: 1,
+						// 		time: 1000
+						// 	});
+						// 	//延迟1秒
+						// 	setTimeout(function () {
+						// 		miniTab.deleteCurrentByIframe();
+						// 	}, 2000);
+						// 	window.location.reload(true);
+						// 	return false;
+						// } else {
+						// 	verifyToken(layer, data);
+						// }
+					},
+					error: function () {
+						$(this).removeClass("layui-btn-disabled").attr("disabled", false);;
+						layer.alert('出错了, 请联系管理员!!!');
+					}
+				});
+
+				return false;
+			});
+		});
+	</script>
+</body>
+
+</html>
