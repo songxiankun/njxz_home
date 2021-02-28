@@ -28,6 +28,7 @@
 								<label class="layui-form-label">设备编号</label>
 								<div class="layui-input-block">
 									<input type="text" name="num" style="width: 90%;" autocomplete="off" placeholder="请输入唯一设备编号" class="layui-input">
+									<input type="hidden" name="token" value="" id="get_token">
 									<button style="position: absolute;right: 0px;top: 0;" lay-submit lay-filter="searchNum" class="layui-btn layui-btn-normal">立即查询</button>
 								</div>
 							</div>
@@ -126,9 +127,12 @@
 					$ = layui.$,
 					miniTab = layui.miniTab;
 
+				$("#get_token").val(localStorage.getItem('token'));
 
 				// 根据机器编号num查询机器信息
-				form.on('submit(searchNum)', function(data){
+				form.on('submit(searchNum)', function(data) {
+					var childCC = $("#childCC");
+					childCC.css('display', 'none');
 					if (data.field.num === '') {
 						layer.msg("请输入设备唯一编号", {
 							icon: 2,
@@ -136,33 +140,44 @@
 						});
 						return false;
 					}
-					
 					$.ajax({
 						url: sxkBaseUrl + '/Apply/getInfoByNum',
 						type: 'post',
 						data: data.field,
-						success: function(data) {
-							// if (data.success) {
-							// 	console.log(data)
-							// 	// $("#buildings").empty();
-							// 	// $("#admins").empty();
-							// 	// $("#buildings").append("<option disabled selected></option>");
-							// 	// $("#admins").append("<option id='select_1' disabled selected></option>");
-							// 	// $.each(data.data.buildings, function(index, value) {
-							// 	// 	$("#buildings").append('<option value=' + value.id + '>' + value.name + '</option>>');
-							// 	// });
-							// 	// $.each(data.data.admins, function(index, value) {
-							// 	// 	$("#admins").append('<option value=' + value.id + '>' + value.num + "-" + value.realname + '</option>>');
-							// 	// });
-							// 	// form.render('select'); //更新全部
-							// 	return false;
-							// } else {
-							// 	layer.msg(data.msg, {
-							// 		icon: 2,
-							// 		time: 1000
-							// 	});
-							// 	return false;
-							// }
+						success: function(response) {
+							if (response.success) {
+								var data = response['data'];
+								$("#floors").empty();
+								$("#rooms").empty();
+								$("#ccode").empty();
+								$("#childCC").empty();
+								$("#buildings").val(data['building_id']);
+								$("#floors").append("<option selected value='" + data['floor_id'] + "'>" + data.floor + "</option>");
+								$("#rooms").append("<option selected value='" + data['room_id'] + "'>" + data.room + "</option>");
+								$("#ccode").append("<option selected value='" + data['ccode_id'] + "'>" + data.ccode + "</option>");
+								
+								childCC.css('display', 'block');
+								// console.log(data.data.childCC);
+								childCC.append('<label class="layui-form-label">问题描述</label>');
+								childCC.append('<input type="hidden" id="isOne" value="1" />');
+								$.each(data.childData, function(index, value) {
+									childCC.append(
+										'<div class="layui-input-block clearAll">\n' +
+										'<lable class="">\n' +
+										// '<input type="checkbox" class="layui-input layui-input-inline _checked" value="'+index+'" name="checked[]" title="'+value.name+'">\n' +
+										value.name +
+										' : </lable>\n' +
+										'<input type="text" name="content[]"  placeholder="请输入问题描述" autocomplete="off"\n' +
+										' class="layui-input layui-input-inline _content" title_id="' + value.id + '" title="' + value.name +
+										'" style="float: none; width: 40%">\n' +
+										'</div>'
+									);
+								});
+								
+								form.render("select");
+								return;
+							}
+							
 						},
 						error: function() {
 							layer.alert('出错了, 请联系管理员!!!');
@@ -170,14 +185,16 @@
 					});
 					return false;
 				});
-				
+
 				// 1、获取所有楼放信息 -- 首次加载使用
 				$.ajax({
 					// url: 'http://api.njxzc.edu.cn/Apply/getBuildingAndAdminInfo',
 					url: sxkBaseUrl + '/Apply/getBuildingAndAdminInfo',
 					type: 'post',
 					dataType: "json",
-					data: {'token' : localStorage.getItem('token')},
+					data: {
+						'token': localStorage.getItem('token')
+					},
 					success: function(data) {
 						if (data.success) {
 							$("#buildings").empty();
@@ -220,7 +237,7 @@
 						dataType: "json",
 						data: {
 							'id': building_id,
-							'token' : localStorage.getItem('token')
+							'token': localStorage.getItem('token')
 						},
 						success: function(data) {
 							if (data.success) {
@@ -308,7 +325,7 @@
 						type: 'post',
 						dataType: "json",
 						data: {
-							'building_id' : building_id,
+							'building_id': building_id,
 							'room_id': rooms_id,
 							'token': localStorage.getItem('token')
 						},
@@ -384,27 +401,31 @@
 
 				//6、 多图片上传
 				upload.render({
-					elem: '#test2'
-					,url: sxkBaseUrl + '/Upload/uploadFile'			//改成您自己的上传接口
-					,data:{'token':localStorage.getItem('token')}
-					,accept:'images'
-					,acceptMime: 'image/*'								// 只显示图片
-					,multiple: true
-					,before: function(obj) {
+					elem: '#test2',
+					url: sxkBaseUrl + '/Upload/uploadFile' //改成您自己的上传接口
+						,
+					data: {
+						'token': localStorage.getItem('token')
+					},
+					accept: 'images',
+					acceptMime: 'image/*' // 只显示图片
+						,
+					multiple: true,
+					before: function(obj) {
 						// //预读本地文件示例，不支持ie8
 						// obj.preview(function (index, file, result) {
 						//     $('#demo2').append('<img width="150px" height="150px" src="' + result + '" alt="' + file.name + '" class="layui-upload-img hover_big">')
 						// });
-					}
-					,done: function(res) {
+					},
+					done: function(res) {
 						if (res.success) {
 							$('#demo2').append('<img width="150px" class="images" height="150px" src="' + res.data.savePath +
 								'" class="layui-upload-img hover_big">')
 						}
 					}
 				});
-				
-				
+
+
 				//监听提交
 				form.on('submit(formDemo)', function(data) {
 					// 获取数据
@@ -412,7 +433,7 @@
 					const enginRoomId = $("#rooms").val();
 					const deviceId = $("#ccode").val();
 					const userId = $("#admins").val();
-				
+
 					if (buildingId == null) {
 						layer.msg("请选择楼层", {
 							icon: 2,
@@ -420,7 +441,7 @@
 						});
 						return false;
 					}
-				
+
 					if (enginRoomId == null) {
 						layer.msg("请选择机房编号", {
 							icon: 2,
@@ -428,7 +449,7 @@
 						});
 						return false;
 					}
-				
+
 					if (deviceId == null) {
 						layer.msg("请选择机器编号", {
 							icon: 2,
@@ -436,7 +457,7 @@
 						});
 						return false;
 					}
-				
+
 					if (userId == null) {
 						layer.msg("请选择审核人员", {
 							icon: 2,
@@ -444,21 +465,21 @@
 						});
 						return false;
 					}
-				
-				
+
+
 					var _total = 0;
 					var root = {};
 					var parents = [];
 					var subs = [];
 					var parent = {};
 					var deviceDetail;
-					
+
 					// 含有子设备
 					if ($("#isOne").val() == 1) {
 						root['total'] = 1
 						parent['id'] = $("#ccode").val()
 						parent['total'] = 0
-						
+
 						for (var i = 0; i < $("._content").length; ++i) {
 							var sub = {};
 							if (data.field[$("._content")[i]['attributes']['name'].value] != "") {
@@ -468,7 +489,7 @@
 								subs.push(sub);
 							}
 						}
-					
+
 						if (subs.length == 0) {
 							layer.msg("请填写设备详情", {
 								icon: 2,
@@ -476,14 +497,12 @@
 							});
 							return false;
 						}
-					
+
 						parent['sub'] = subs
 						parents.push(parent)
 						root['parents'] = parents
 						parent['total'] = _total;
-					} 
-					else
-					{
+					} else {
 						if ($("#content").val() == "") {
 							layer.msg("请填写设备问题描述", {
 								icon: 2,
@@ -499,14 +518,14 @@
 					}
 					// 转化成字符串
 					deviceDetail = JSON.stringify(root);
-				
+
 					var images = Array();
 					// 图片处理
 					for (var i = 0; i < $(".images").length; ++i) {
 						images[i] = $(".images")[i].currentSrc;
 					}
 					images = JSON.stringify(images);
-				
+
 					var data = {
 						"building_id": buildingId,
 						"engin_room_id": enginRoomId,
@@ -516,7 +535,7 @@
 						"device_detail": deviceDetail,
 						'token': localStorage.getItem('token')
 					};
-					$(this).addClass("layui-btn-disabled").attr("disabled",true);
+					$(this).addClass("layui-btn-disabled").attr("disabled", true);
 					// ajax提交
 					$.ajax({
 						url: sxkBaseUrl + '/Apply/submit',
@@ -539,11 +558,11 @@
 							}
 						},
 						error: function() {
-							$(this).removeClass("layui-btn-disabled").attr("disabled",false);;
+							$(this).removeClass("layui-btn-disabled").attr("disabled", false);;
 							layer.alert('出错了, 请联系管理员!!!');
 						}
 					});
-				
+
 					return false;
 				});
 			});
