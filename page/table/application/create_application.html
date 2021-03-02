@@ -173,9 +173,10 @@
 										'</div>'
 									);
 								});
-								
 								form.render("select");
 								return;
+							} else {
+								layer.alert(response['msg'])
 							}
 							
 						},
