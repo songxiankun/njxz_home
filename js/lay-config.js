@@ -99,7 +99,7 @@ function showMsgAndCloseFrame(msg, time, reload) {
 		let iframeIndex = parent.layer.getFrameIndex(window.name);
 		parent.layer.close(iframeIndex);
 		if (reload) {
-			parent.location.reload();
+			parent.parent.location.reload();
 		}
 	});
 }
