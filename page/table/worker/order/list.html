@@ -48,12 +48,17 @@
             <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">&nbsp;查看详情&nbsp;</a>
         </script>
 
+        <script type="text/html" id="tableBar_6">
+            <a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius" lay-event="detail">&nbsp;查看详情&nbsp;</a>
+        </script>
+
     </div>
 </div>
 <script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script src="/js/ApiConfig.js" charset="utf-8"></script>
 <script>
+
     function getUrlParam(name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
             var r = window.location.search.substr(1).match(reg);  //匹配目标参数
@@ -232,7 +237,7 @@
                             layer.closeAll();
                             if (res.code == 200) {
                                 layer.msg(res.msg, {icon: 1, time: 400}, function(){
-                                    window.location.reload();
+                                    parent.location.reload();
                                 });
                             } else {
                                 layer.msg(res.msg, {icon: 5});
@@ -255,6 +260,18 @@
                     shadeClose: true,
                     area: ['80%', '80%'],
                     content: '/page/table/order/submit1.html',
+                });
+            }else if(obj.event === 'signOnline') {
+                var _data = JSON.stringify(data);
+                localStorage.setItem('current_detail', _data);
+                var index = layer.open({
+                    title: '在线签字',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['50%', '80%'],
+                    content: '/page/table/worker/order/sign_online.html',
                 });
             }
             // else if (obj.event === 'pass') {
