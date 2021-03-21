@@ -268,7 +268,7 @@
                             layer.closeAll();
                             if (res.code == 200) {
                                 layer.msg(res.msg, {icon: 1, time: 400}, function(){
-                                    window.location.reload();
+                                    parent.location.reload();
                                 });
                             } else {
                                 layer.msg(res.msg, {icon: 5});
