@@ -55,19 +55,31 @@
           "child": [
             {
               "title": "待维修",
-              "href": "page/fix_interface.html?status=1",
-              "icon": "fa fa-tachometer",
-              "target": "_self"
-            },
-            {
-              "title": "维修中",
               "href": "page/fix_interface.html?status=2",
               "icon": "fa fa-tachometer",
               "target": "_self"
             },
             {
-              "title": "维修结束",
+              "title": "维修中",
               "href": "page/fix_interface.html?status=3",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "维修结束",
+              "href": "page/fix_interface.html?status=4",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "待签字",
+              "href": "page/fix_interface.html?status=5",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "订单完成",
+              "href": "page/fix_interface.html?status=6",
               "icon": "fa fa-tachometer",
               "target": "_self"
             }
