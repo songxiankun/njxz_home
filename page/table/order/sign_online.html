@@ -28,7 +28,7 @@
             <div class="layui-form-item">
                 <div class="layui-input-block">
                     <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    <button type="button" onclick="reset_sign()" class="layui-btn layui-btn-primary">重置</button>
                 </div>
             </div>
             <br>
@@ -63,6 +63,16 @@ window.onload = function() {
             };
         };
     };
+
+    //清空canvas，重置签名
+    function reset_sign() {
+        var oC = document.getElementById('canvas');
+        canvas.height = canvas.height;
+        canvas.width = canvas.width;
+        var oCG = oC.getContext('2d');
+        oCG.fillStyle = "#EEEEEE";
+        oCG.fillRect(0,0,600,200);
+    }
     
     function convertBase64UrlToBlob(urlData){  
         var bytes=window.atob(urlData.split(',')[1]);        //去掉url的头，并转换为byte  
