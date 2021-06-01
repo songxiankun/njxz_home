@@ -40,6 +40,20 @@
               "target": "_self"
             }
           ]
+        },
+        {
+          "title": "流程管理",
+          "href": "",
+          "icon": "fa fa-slideshare",
+          "target": "",
+          "child": [
+            {
+              "title": "流程监控",
+              "href": "page/table/application/alllist.html",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+          ]
         }
       ]
     }

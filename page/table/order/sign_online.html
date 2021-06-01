@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+</head>
+
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-text layui-text-center"
+             style="font-size: 25px; ;padding: 15px 0; text-align: center;height: 50px;line-height: 50px"> 在线签字
+        </div>
+        <!-- 内容区 -->
+        <form class="layui-form" style="width: 80%; margin: 0 auto;">
+
+            <div class="layui-form-item"></div>
+            <canvas id="canvas" width="600" height="200" style="border: 1px solid #888888;"> </canvas>
+            <div class="layui-form-item">
+            </div>
+            <br><br>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="button" onclick="reset_sign()" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+        </form>
+    </div>
+</div>
+
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js" charset="utf-8"></script>
+<script src="/js/ApiConfig.js" charset="utf-8"></script>
+<script>
+
+window.onload = function() {
+        var oC = document.getElementById('canvas');
+        var oCG = oC.getContext('2d');
+        oCG.fillStyle = "#EEEEEE";
+        oCG.fillRect(0,0,600,200);
+        oC.onmousedown = function(ev) {
+            var ev = ev || window.event;
+            oCG.moveTo(ev.clientX-oC.offsetLeft,ev.clientY-oC.offsetTop);
+            //ev.clientX-oC.offsetLeft,ev.clientY-oC.offsetTop鼠标在当前画布上X,Y坐标
+            document.onmousemove = function(ev) {
+                var ev = ev || window.event;//获取event对象
+                oCG.lineTo(ev.clientX-oC.offsetLeft,ev.clientY-oC.offsetTop);
+                oCG.stroke();
+            };
+            oC.onmouseup = function() {
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
+        };
+    };
+
+    //清空canvas，重置签名
+    function reset_sign() {
+        var oC = document.getElementById('canvas');
+        canvas.height = canvas.height;
+        canvas.width = canvas.width;
+        var oCG = oC.getContext('2d');
+        oCG.fillStyle = "#EEEEEE";
+        oCG.fillRect(0,0,600,200);
+    }
+    
+    function convertBase64UrlToBlob(urlData){  
+        var bytes=window.atob(urlData.split(',')[1]);        //去掉url的头，并转换为byte  
+        //处理异常,将ascii码小于0的转换为大于0  
+        var ab = new ArrayBuffer(bytes.length);  
+        var ia = new Uint8Array(ab);  
+        for (var i = 0; i < bytes.length; i++) {  
+            ia[i] = bytes.charCodeAt(i);  
+        }  
+        return new Blob( [ab] , {type : 'image/png'});  
+    }  
+    
+    function closeWindow(msg) {
+        var index = layer.msg(msg, {
+            icon: 1,
+            time: 1000
+        }, function () {
+            // 关闭弹出层
+            layer.close(index);
+            var iframeIndex = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(iframeIndex);
+            parent.parent.location.reload();
+        });
+    }
+
+    layui.use(['form', 'upload', 'miniTab'], function () {
+        var form = layui.form,
+            upload = layui.upload,
+            $ = layui.$,
+            miniTab = layui.miniTab;
+
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            // 获取数据
+            // ajax提交
+            var obj = JSON.parse(localStorage.getItem('current_detail'));
+            var id = obj.id;
+            var images = Array();
+            // 图片处理
+            for (var i = 0; i < $(".images").length; ++i) {
+                images[i] = $(".images")[i].currentSrc;
+            }
+            images = JSON.stringify(images);
+
+            var urlData = document.getElementById("canvas").toDataURL("image/png");
+            var formData = new FormData();
+            formData.append('file', convertBase64UrlToBlob(urlData));
+
+            $.ajax({
+                url: javaBaseUrl + 'api/fileUpload' + '?token=' + localStorage.getItem('token'),
+                type: 'post',
+                contentType: false,
+                processData : false,
+                data: formData,
+                success: function (data) {
+                    console.log(data);
+                    if (data.code == 200) {
+                        let imgUrl = data.data.fileName;
+                        $.ajax({
+                            url: javaBaseUrl + 'api/orders/sign/submit' + '?token=' + localStorage.getItem('token'),
+                            type: 'post',
+                            data: {id: id, signImg: imgUrl},
+                            success: function (data) {
+                                if (data.code == 200) {
+                                    closeWindow('提交成功！');
+                                    return false;
+                                } else {
+                                    layer.msg(data.msg, {
+                                        icon: 2,
+                                        time: 1000
+                                    });
+                                    return false;
+                                }
+                            },
+                            error: function () {
+                                layer.alert('出错了, 请联系管理员!!!');
+                            }
+                        });
+                        return false;
+                    } else {
+                        layer.msg(data.msg, {
+                            icon: 2,
+                            time: 1000
+                        });
+                        return false;
+                    }
+                },
+                error: function () {
+                    layer.alert('出错了, 请联系管理员!!!');
+                }
+            });
+
+            // $.ajax({
+            //     url: javaBaseUrl + 'api/orders/user/submit',
+            //     type: 'post',
+            //     dataType: "json",
+            //     headers: {
+            //         Authorization: localStorage.getItem('token'),
+            //         'content-type': 'application/x-www-form-urlencoded'
+            //     },
+            //     data: {id: id, image: images, token: localStorage.getItem('token')},
+            //     success: function (data) {
+            //         if (data.code == 200) {
+            //             closeWindow('提交成功！');
+            //             return false;
+            //         } else {
+            //             layer.msg(data.msg, {
+            //                 icon: 2,
+            //                 time: 1000
+            //             });
+            //             return false;
+            //         }
+            //     },
+            //     error: function () {
+            //         layer.alert('出错了, 请联系管理员!!!');
+            //     }
+            // });
+
+            return false;
+        });
+
+        //多图片上传
+        upload.render({
+            elem: '#test2'
+            , url: javaBaseUrl + '/api/fileUpload' + "?token=" + localStorage.getItem('token') //改成您自己的上传接口
+            // , url: 'http://10.10.185.148:8080/api/fileUpload'
+
+            , headers: {Authorization: localStorage.getItem('token')}
+            , multiple: true
+            , before: function (obj) {
+                // //预读本地文件示例，不支持ie8
+                // obj.preview(function (index, file, result) {
+                //     $('#demo2').append('<img width="150px" height="150px" src="' + result + '" alt="' + file.name + '" class="layui-upload-img hover_big">')
+                // });
+            }
+            , done: function (res) {
+                if (res.status) {
+                    // $('#demo2').append('<input name="file[]" type="file" style="display:none" value="'+res.data.fileName+'"/>');
+                    $('#demo2').append('<img width="150px" class="images" height="150px" src="' + res.data.fileName + '" class="layui-upload-img hover_big">')
+                }
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

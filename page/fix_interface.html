@@ -67,17 +67,26 @@
             <a class="layui-btn layui-btn-xs layui-btn" lay-event="detail">详情</a>
         </script> -->
 
-        <script type="text/html" id="tableBar_1">
+        <script type="text/html" id="tableBar_2">
             <!-- <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="pass">予以通过</a>
             <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="unpass">不通过</a> -->
             <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
         </script>
 
-        <script type="text/html" id="tableBar_2">
+        <script type="text/html" id="tableBar_3">
             <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
         </script>
 
-        <script type="text/html" id="tableBar_3">
+        <script type="text/html" id="tableBar_4">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+        </script>
+
+        <script type="text/html" id="tableBar_5">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+            <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="signOnline">&nbsp;在线签字&nbsp;</a>
+        </script>
+
+        <script type="text/html" id="tableBar_6">
             <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
         </script>
     </div>
@@ -89,7 +98,7 @@
             var r = window.location.search.substr(1).match(reg);  //匹配目标参数
             if (r != null) return unescape(r[2]); return null; //返回参数值
     }
-    var status = getUrlParam('status'); 
+    var status = getUrlParam('status');
     layui.use(['form', 'table'], function () {
         var $ = layui.jquery,
             form = layui.form,
@@ -123,8 +132,38 @@
                 {field: 'detail', width: 200, title: '问题描述', sort: true},
                 // {field: 'images', width: 200, title: '图片',templet:'<div><img src="{{d.images[0]}}"></div>'},
                 {field: 'status', width: 120, title: '状态', sort: true},
-                {field:'addTime',width:120,title:'添加时间'},
-                {title: '操作', width: 150, toolbar: '#tableBar_' + status, align: "center"}
+                {field:'addTime',width:420,title:'添加时间'},
+                {title: '操作', width: 250, align: "right", templet: function (d) {
+                    if (status == 2) {
+                        let remindBtn = '';
+                        if(d.urge) {
+                            remindBtn = '<a class="layui-btn layui-btn-info layui-btn-xs data-count-detail" lay-event="remind">催单</a>';
+                        }
+                        // TODO 显示催单按钮
+                        remindBtn = '<a class="layui-btn layui-btn-info layui-btn-xs data-count-detail" lay-event="remind">催单</a>';
+                        return `
+                        ${remindBtn}
+                        <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+                        `;
+                        } else if (status == 3) {
+                            return `
+                        <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+                        `;
+                        } else if (status == 4) {
+                            return `
+                        <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+                        `;
+                        } else if (status == 5) {
+                        return `
+                        <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+                        <a class="layui-btn layui-btn-warm layui-btn-sm layui-btn-radius" lay-event="signOnline">&nbsp;在线签字&nbsp;</a>
+                        `;
+                        } else if (status == 6) {
+                        return `
+                        <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="detail">详情</a>
+                        `;
+                        }
+                }}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
@@ -212,16 +251,25 @@
                     maxmin:true,
                     shadeClose: true,
                     area: ['50%', '50%'],
-                    content: '/page/table/order/detail_' + status + '.html',
+                    content: '/page/table/worker/order/detail_' + status + '.html',
+                });
+            } else if(obj.event === 'signOnline') {
+                var _data = JSON.stringify(data);
+                localStorage.setItem('current_detail', _data);
+                var index = layer.open({
+                    title: '在线签字',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['50%', '80%'],
+                    content: '/page/table/order/sign_online.html',
                 });
             }
-            // else if (obj.event === 'pass') {
-            //     layer.confirm('通过该条申请吗?', function (index) {
-
-            //         //调用ajax接口给表单通过
-            //         layer.close(index);
-            //     });
-            // }
+            else if (obj.event === 'remind') {
+                layer.msg(JSON.stringify(data));
+                return false;
+            }
         });
 
     });

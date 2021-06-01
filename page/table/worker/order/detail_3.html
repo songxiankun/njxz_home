@@ -132,6 +132,13 @@
         </div>
       </div>
 
+      <div class="layui-form-item">
+        <label class="layui-form-label required">开始维修时间</label>
+        <div class="layui-input-block">
+            <input type="text" id="startTime" value="" readonly disabled class="layui-input">
+        </div>
+      </div>
+
 <!--      <div class="layui-form-item">-->
 <!--        <label class="layui-form-label">维修凭证图片</label>-->
 <!--        <div class="layui-input-block" id="images">-->
@@ -186,6 +193,7 @@
 
         var data = JSON.parse(localStorage.getItem('current_detail'));
         var orderId = data.id;
+        data['startTime'] = data['receiveTime'];
         console.log(data);
         localStorage.removeItem('current_detail');
 
