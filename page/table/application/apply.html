@@ -43,7 +43,9 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -54,13 +56,13 @@
 
 
         <script type="text/html" id="currentTableBar">
-<!--            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>-->
+            <!--            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>-->
             <a class="layui-btn layui-btn-warm layui-btn-xs data-count-detail" lay-event="detail">详情</a>
             <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
         </script>
 
         <script type="text/html" id="currentTableBar2">
-<!--            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>-->
+            <!--            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>-->
             <a class="layui-btn layui-btn-warm layui-btn-xs data-count-detail" lay-event="detail">详情</a>
             <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
         </script>
@@ -68,7 +70,7 @@
         <script type="text/html" id="currentTableBar3">
             <!--            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>-->
             <a class="layui-btn layui-btn-warm layui-btn-xs data-count-detail" lay-event="detail">详情</a>
-<!--            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>-->
+            <!--            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>-->
         </script>
     </div>
 </div>
@@ -88,15 +90,15 @@
         var _url = "";
         if (flag == 1) {
             //_url = "http://api.njxzc.edu.cn/RepairApplication/getApplyLists?t_id=1&uid="+localStorage.getItem('uid');
-            _url = sxkBaseUrl+"/RepairApplication/getApplyLists?t_id=1&token="+localStorage.getItem('token');
+            _url = sxkBaseUrl + "/RepairApplication/getApplyLists?t_id=1&token=" + localStorage.getItem('token');
             _toolbar = '#currentTableBar';
         } else if (flag == 2) {
             //_url = "http://api.njxzc.edu.cn/RepairApplication/getApplyLists?t_id=2&uid="+localStorage.getItem('uid');
-            _url = sxkBaseUrl+"/RepairApplication/getApplyLists?t_id=2&token="+localStorage.getItem('token');
+            _url = sxkBaseUrl + "/RepairApplication/getApplyLists?t_id=2&token=" + localStorage.getItem('token');
             _toolbar = '#currentTableBar2';
         } else if (flag == 3) {
             //_url = "http://api.njxzc.edu.cn/RepairApplication/getApplyLists?t_id=3&uid="+localStorage.getItem('uid');
-            _url = sxkBaseUrl+"/RepairApplication/getApplyLists?t_id=3&token="+localStorage.getItem('token');
+            _url = sxkBaseUrl + "/RepairApplication/getApplyLists?t_id=3&token=" + localStorage.getItem('token');
             _toolbar = '#currentTableBar3';
         } else {
             layer.msg("请求错误", {
@@ -125,48 +127,52 @@
                 {field: 'engin_room', title: '实验室', width: 120},
                 {field: 'device_num', width: 120, title: '设备编号', sort: true},
                 {field: 'device', width: 135, title: '设备问题', sort: true},
-                {field: 'images', width: 150, title: '设备图片', templet: function (d) {
-                    if (d.images != null)
-                    {
-                        for (var i = 0; i < d.images.length; ++i)
-                        return '<a href="' + d.images[i] + '" target="_blank"><img alt="设备问题图片" src="' + d.images[i] + '" width="30" height="30" /></a>';
+                {
+                    field: 'images', width: 150, title: '设备图片', templet: function (d) {
+                        if (d.images != null) {
+                            for (var i = 0; i < d.images.length; ++i)
+                                return '<a href="' + d.images[i] + '" target="_blank"><img alt="设备问题图片" src="' + d.images[i] + '" width="30" height="30" /></a>';
+                        } else {
+                            return "暂无数据";
+                        }
                     }
-                    else
-                    {
-                        return "暂无数据";
-                    }
-                }},
+                },
                 {field: 'upd_name', width: 120, title: '审核人', sort: true},
                 {field: 'format_add_time', width: 120, title: '创建时间'},
                 {field: 'format_upd_time', width: 120, title: '更新时间'},
-                {title: '操作', minWidth: 160, align: "right", fixed:'right', templet: function (d) {
-                    if (flag == 1) {
-                        let remindBtn = '';
-                        let currentTime = new Date().getTime() / 1000;
-                        let expiryTime = parseInt(d.expiry_date);
+                {
+                    title: '操作', minWidth: 160, align: "right", fixed: 'right', templet: function (d) {
+                        if (flag == 1) {
+                            let remindBtn = '';
+                            let currentTime = new Date().getTime() / 1000;
+                            let expiryTime = parseInt(d.expiry_date);
 
-                        // TODO 显示催单按钮
-                        remindBtn = '<a class="layui-btn layui-btn-info layui-btn-xs data-count-detail" lay-event="remind">催单</a>';
+                            if (expiryTime !== 0 && currentTime > expiryTime) {
+                                remindBtn = '<a class="layui-btn layui-btn-info layui-btn-xs data-count-detail" lay-event="remind">催单</a>';
+                            }
 
-                        if(expiryTime !== 0 && currentTime > expiryTime) {
-                            remindBtn = '<a class="layui-btn layui-btn-info layui-btn-xs data-count-detail" lay-event="remind">催单</a>';
-                        }
-                        return `
+                            // TODO 显示催单按钮
+                            if (d.id % 2 == 0) {
+                                remindBtn = '<a class="layui-btn layui-btn-info layui-btn-xs data-count-detail" lay-event="remind">催单</a>';
+                            }
+
+                            return `
                         ${remindBtn}
                         <a class="layui-btn layui-btn-warm layui-btn-xs data-count-detail" lay-event="detail">详情</a>
                         <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
                         `;
-                    } else if (flag == 2) {
-                        return `
+                        } else if (flag == 2) {
+                            return `
                         <a class="layui-btn layui-btn-warm layui-btn-xs data-count-detail" lay-event="detail">详情</a>
                         <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
                         `;
-                    } else if (flag == 3) {
-                        return `
+                        } else if (flag == 3) {
+                            return `
                         <a class="layui-btn layui-btn-warm layui-btn-xs data-count-detail" lay-event="detail">详情</a>
                         `;
+                        }
                     }
-                }}
+                }
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
@@ -223,10 +229,10 @@
                 layer.confirm('删除当前数据吗?', function (index) {
                     $.ajax({
                         // url: 'http://api.njxzc.edu.cn/RepairApplication/deleteByID',
-                        url: sxkBaseUrl+'/RepairApplication/deleteByID',
+                        url: sxkBaseUrl + '/RepairApplication/deleteByID',
                         type: 'POST',
                         dataType: 'json',
-                        data: { 'id' : obj.data['id'], 'uid' : localStorage.getItem('uid')},
+                        data: {'id': obj.data['id'], 'uid': localStorage.getItem('uid')},
                         success: function (data) {
                             if (data.success) {
                                 layer.msg(data.msg, {
@@ -250,15 +256,17 @@
                     return false;
 
                     obj.del();
-                    layer.close(index); console.log(obj);return;
+                    layer.close(index);
+                    console.log(obj);
+                    return;
                 });
-            }  else if (obj.event === 'detail') {  // 监听删除操作
+            } else if (obj.event === 'detail') {  // 监听删除操作
                 localStorage.setItem('currDetail', JSON.stringify(data));
                 var index = layer.open({
                     title: '申请详情',
                     type: 2,
                     shade: 0.2,
-                    maxmin:true,
+                    maxmin: true,
                     shadeClose: true,
                     area: ['100%', '100%'],
                     content: '/page/table/application/apply_detail.html',
@@ -268,9 +276,28 @@
                 });
                 return false;
             } else if (obj.event === 'remind') {  // 监听催单操作
-                localStorage.setItem('currDetail', JSON.stringify(data));
-                layer.msg(JSON.stringify(data));
-                return false;
+                layer.confirm('确定向审核人员发送催单邮件吗?', function (index) {
+                    $.ajax({
+                        url: javaBaseUrl + '/api/application/remind?token=' + localStorage.getItem('token'),
+                        type: 'POST',
+                        data: {'applicationId': obj.data['id']},
+                        success: function (data) {
+                            if (data.code == 200) {
+                                layer.msg(data.msg, {
+                                    icon: 1,
+                                    time: 2000
+                                });
+                                return false;
+                            } else {
+                                layer.msg(data.msg, {
+                                    icon: 2,
+                                    time: 2000
+                                });
+                                return false;
+                            }
+                        }
+                    });
+                });
             }
         });
 

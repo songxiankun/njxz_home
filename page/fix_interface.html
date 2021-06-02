@@ -132,8 +132,8 @@
                 {field: 'detail', width: 200, title: '问题描述', sort: true},
                 // {field: 'images', width: 200, title: '图片',templet:'<div><img src="{{d.images[0]}}"></div>'},
                 {field: 'status', width: 120, title: '状态', sort: true},
-                {field:'addTime',width:420,title:'添加时间'},
-                {title: '操作', width: 250, align: "right", templet: function (d) {
+                {field:'addTime',width:220,title:'添加时间'},
+                {title: '操作', minWidth: 160, align: "right", fixed: 'right', templet: function (d) {
                     if (status == 2) {
                         let remindBtn = '';
                         if(d.urge) {
@@ -266,9 +266,29 @@
                     content: '/page/table/order/sign_online.html',
                 });
             }
-            else if (obj.event === 'remind') {
-                layer.msg(JSON.stringify(data));
-                return false;
+            else if (obj.event === 'remind') {//监听催单
+                layer.confirm('确定向维修人员发送催单邮件吗?', function (index) {
+                    $.ajax({
+                        url: javaBaseUrl + '/api/order/remind?token=' + localStorage.getItem('token'),
+                        type: 'POST',
+                        data: {'applicationId': obj.data['id']},
+                        success: function (data) {
+                            if (data.code == 200) {
+                                layer.msg(data.msg, {
+                                    icon: 1,
+                                    time: 2000
+                                });
+                                return false;
+                            } else {
+                                layer.msg(data.msg, {
+                                    icon: 2,
+                                    time: 2000
+                                });
+                                return false;
+                            }
+                        }
+                    });
+                });
             }
         });
 
